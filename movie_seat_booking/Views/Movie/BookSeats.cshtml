@@ -1,0 +1,76 @@
+﻿@model BookSeatsViewModel
+
+<form method="post" asp-action="ConfirmBooking" id="bookingForm">
+    <input type="hidden" name="movieId" value="@Model.Movie.MovieId" />
+    <input type="hidden" id="selectedSeatIds" name="selectedSeatIds" />
+
+    <div>
+        <h3>Select Seats:</h3>
+
+        <!-- Seat layout grid -->
+        <div class="seat-layout">
+            @for (int row = 1; row <= 5; row++)
+            {
+                <div class="row">
+                    @for (int col = 1; col <= 5; col++)
+                    {
+                        // Find the seat for the current row and column
+                        var seat = Model.AvailableSeats.FirstOrDefault(s => s.RowName == row && s.ColumnName == col);
+
+                        if (seat != null)
+                        {
+                            <!-- If the seat is available, display a green button for selection -->
+                            <button type="button" class="seat-button available" data-seat-id="@seat.SeatId" data-seat-name="Row @seat.RowName, Column @seat.ColumnName">
+                                Row @seat.RowName, Column @seat.ColumnName
+                            </button>
+                        }
+                        else
+                        {
+                            <!-- Display booked seats with a red button (disabled) -->
+                            <button type="button" class="seat-button booked" disabled>
+                                Row @row, Column @col (Booked)
+                            </button>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Customer information input -->
+    <div>
+        <label for="customerName">Your Name:</label>
+        <input type="text" name="customerName" id="customerName" required />
+    </div>
+
+    <button type="submit">Confirm Booking</button>
+    <br/>
+    <a asp-controller="Movie" asp-action="Index">Book more  </a>
+
+</form>
+
+<script>
+    // Handle the selection/deselection of seats
+    const selectedSeats = new Set(); // Set to store selected seat IDs
+
+    // Select all available seat buttons
+    const seatButtons = document.querySelectorAll('.seat-button.available');
+
+    seatButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const seatId = this.getAttribute('data-seat-id');
+
+            // Toggle the selected state
+            if (selectedSeats.has(seatId)) {
+                selectedSeats.delete(seatId); // Remove from selected set
+                this.classList.remove('selected'); // Remove selected style
+            } else {
+                selectedSeats.add(seatId); // Add to selected set
+                this.classList.add('selected'); // Add selected style
+            }
+
+            // Update the hidden input field with the selected seat IDs
+            document.getElementById('selectedSeatIds').value = Array.from(selectedSeats).join(',');
+        });
+    });
+</script>

@@ -1,0 +1,18 @@
+﻿@model Booking
+
+<h2>Booking Confirmation</h2>
+
+<p>Thank you for booking with us!</p>
+
+<p><strong>Customer Name:</strong> @Model.CustomerName</p>
+<p><strong>Movie Title:</strong> @Model.Movie.Title</p>  <!-- Now you can access Movie details -->
+<p><strong>Showtime:</strong> @Model.Movie.ShowTime.ToString("f")</p>
+
+<h3>Booked Seats:</h3>
+<ul>
+    @foreach (var seat in Model.BookedSeats)
+    {
+        <li>Row @seat.RowName, Column @seat.ColumnName</li>
+    }
+</ul>
+<a   asp-controller="Movie" asp-action="Index">Back to Movies </a>

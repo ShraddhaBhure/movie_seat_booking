@@ -1,0 +1,47 @@
+﻿@model Movie
+
+@{
+    ViewData["Title"] = "Edit Movie";
+}
+
+<h2>Edit Movie</h2>
+
+<form asp-action="Edit" enctype="multipart/form-data">
+    <input type="hidden" asp-for="MovieId" />
+
+    <div class="form-group">
+        <label for="Title">Title</label>
+        <input type="text" class="form-control" id="Title" asp-for="Title" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Genre">Genre</label>
+        <input type="text" class="form-control" id="Genre" asp-for="Genre" required />
+    </div>
+
+    <div class="form-group">
+        <label for="ShowTime">ShowTime</label>
+        <input type="datetime-local" class="form-control" id="ShowTime" asp-for="ShowTime" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Price">Price</label>
+        <input type="number" class="form-control" id="Price" asp-for="Price" required />
+    </div>
+
+    <div class="form-group">
+        <label for="CoverImage">Cover Image (Optional)</label>
+        <input type="file" class="form-control" id="CoverImage" name="coverImage" />
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.CoverImage))
+    {
+        <div>
+            <h5>Current Cover Image:</h5>
+            <img src="~/movieimages/@Model.CoverImage" width="150" />
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+</form>

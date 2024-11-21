@@ -1,0 +1,12 @@
+﻿@model List<Movie>
+
+<h2>Available Movies</h2>
+
+<ul>
+    @foreach (var movie in Model)
+    {
+        <li>
+            <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })">@movie.Title</a> - @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
+        </li>
+    }
+</ul>
