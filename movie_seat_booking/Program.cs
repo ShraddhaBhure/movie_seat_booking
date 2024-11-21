@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using movie_seat_booking.Models;
+using movie_seat_booking.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
+builder.Services.AddSingleton<SmsService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

@@ -7,25 +7,32 @@
 <h2>Create Movie</h2>
 
 <form asp-action="Create" enctype="multipart/form-data">
-    <div class="form-group">
+    <div class="row">
+        <div class="col-6">
         <label for="Title">Title</label>
         <input type="text" class="form-control" id="Title" name="Title" required />
     </div>
-    <div class="form-group">
+        <div class="col-6">
         <label for="Genre">Genre</label>
         <input type="text" class="form-control" id="Genre" name="Genre" required />
-    </div>
-    <div class="form-group">
+        </div>
+    </div> <div class="row">
+        <div class="col-6">
         <label for="ShowTime">ShowTime</label>
         <input type="datetime-local" class="form-control" id="ShowTime" name="ShowTime" required />
     </div>
-    <div class="form-group">
+        <div class="col-6">
         <label for="Price">Price</label>
         <input type="number" class="form-control" id="Price" name="Price" required />
-    </div>
-    <div class="form-group">
+        </div>
+    </div> <div class="row">
+        <div class="col-6">
         <label for="CoverImage">Cover Image</label>
         <input type="file" class="form-control" id="CoverImage" name="coverImage" />
     </div>
+        <div class="col-6">
+        <label for="PosterImage">Poster Image</label>
+        <input type="file" class="form-control" id="PosterImage" name="posterImage" />
+    </div></div>
     <button type="submit" class="btn btn-primary">Create</button>
 </form>

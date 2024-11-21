@@ -6,6 +6,8 @@
 
 <h2>Movies</h2>
 
+<a href="@Url.Action("Create")">Create New Movie</a>
+
 <table class="table">
     <thead>
         <tr>
@@ -14,6 +16,7 @@
             <th>ShowTime</th>
             <th>Price</th>
             <th>Cover Image</th>
+            <th>Poster Image</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -32,6 +35,12 @@
                     }
                 </td>
                 <td>
+                    @if (!string.IsNullOrEmpty(movie.PosterImage))
+                    {
+                        <img src="~/movieposters/@movie.PosterImage" width="200" height="100" />
+                    }
+                </td>
+                <td>
                     <a href="@Url.Action("Edit", new { id = movie.MovieId })">Edit</a> |
                     <a href="@Url.Action("Delete", new { id = movie.MovieId })">Delete</a>
                 </td>
@@ -40,4 +49,3 @@
     </tbody>
 </table>
 
-<a href="@Url.Action("Create")">Create New Movie</a>

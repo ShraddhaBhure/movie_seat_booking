@@ -1,5 +1,5 @@
 ﻿@model List<Movie>
-
+@* 
 <h2>Available Movies</h2>
 
 <ul>
@@ -10,3 +10,36 @@
         </li>
     }
 </ul>
+ *@
+
+
+<h2>Available Movies</h2>
+
+<div class="row">
+    @foreach (var movie in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card" style="width: 18rem;">
+                @if (!string.IsNullOrEmpty(movie.CoverImage))
+                {
+                    <img src="~/movieimages/@movie.CoverImage" class="card-img-top" alt="@movie.Title" width="80" height="225" />
+
+
+                }
+                else
+                {
+                    <img src="~/images/default-cover.jpg" class="card-img-top" alt="Default Cover" width="80" height="225" />
+                }
+
+                <div class="card-body">
+                   @*  <h5 class="card-title">@movie.Title</h5> *@
+                    <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })">@movie.Title</a></strong>
+                    <p class="card-text">
+                        <strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
+                    </p>
+                    <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-primary">Book Seats</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

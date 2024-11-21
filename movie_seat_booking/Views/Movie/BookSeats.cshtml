@@ -19,16 +19,26 @@
 
                         if (seat != null)
                         {
-                            <!-- If the seat is available, display a green button for selection -->
+                            @*   <!-- If the seat is available, display a green button for selection -->
+                <button type="button" class="seat-button available" data-seat-id="@seat.SeatId" data-seat-name="Row @seat.RowName, Column @seat.ColumnName">
+                Row @seat.RowName, Column @seat.ColumnName
+                </button> *@
+
+
                             <button type="button" class="seat-button available" data-seat-id="@seat.SeatId" data-seat-name="Row @seat.RowName, Column @seat.ColumnName">
-                                Row @seat.RowName, Column @seat.ColumnName
+                                <i class="fa-solid fa-couch"></i>  @* Row @seat.RowName, Column @seat.ColumnName *@
                             </button>
                         }
                         else
                         {
-                            <!-- Display booked seats with a red button (disabled) -->
-                            <button type="button" class="seat-button booked" disabled>
-                                Row @row, Column @col (Booked)
+                            @*  <!-- Display booked seats with a red button (disabled) -->
+                <button type="button" class="seat-button booked" disabled>
+                Row @row, Column @col (Booked)
+                </button>
+                *@
+
+                            <button type="button" class="seat-button booked" data-seat-id="3" data-seat-name="Row A, Column 3">
+                                <i class="fa-solid fa-couch"></i>   @* Row @row, Column @col (Booked) *@
                             </button>
                         }
                     }
@@ -44,7 +54,7 @@
     </div>
 
     <button type="submit">Confirm Booking</button>
-    <br/>
+    <br />
     <a asp-controller="Movie" asp-action="Index">Book more  </a>
 
 </form>
@@ -74,3 +84,12 @@
         });
     });
 </script>
+
+
+
+
+
+
+
+
+

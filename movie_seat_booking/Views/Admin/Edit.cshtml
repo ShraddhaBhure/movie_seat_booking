@@ -4,43 +4,66 @@
     ViewData["Title"] = "Edit Movie";
 }
 
-<h2>Edit Movie</h2>
 
 <form asp-action="Edit" enctype="multipart/form-data">
     <input type="hidden" asp-for="MovieId" />
-
-    <div class="form-group">
+    <div class="row">
+    <div class="col-6">
         <label for="Title">Title</label>
         <input type="text" class="form-control" id="Title" asp-for="Title" required />
     </div>
 
-    <div class="form-group">
+    <div class="col-6">
         <label for="Genre">Genre</label>
         <input type="text" class="form-control" id="Genre" asp-for="Genre" required />
+        </div>
     </div>
 
-    <div class="form-group">
+        <div class="row">
+    <div class="col-6">
         <label for="ShowTime">ShowTime</label>
         <input type="datetime-local" class="form-control" id="ShowTime" asp-for="ShowTime" required />
     </div>
 
-    <div class="form-group">
+    <div class="col-6">
         <label for="Price">Price</label>
         <input type="number" class="form-control" id="Price" asp-for="Price" required />
-    </div>
+            </div>
+        </div>
+       
+    <div class="row">
+        <div class="col-3">
+            <label for="CoverImage">Cover Image</label>
+            <input type="file" class="form-control" id="CoverImage" name="coverImage" />
+        </div>
+        <div class="col-3">
+            <label for="PosterImage">Poster Image</label>
+            <input type="file" class="form-control" id="PosterImage" name="posterImage" />
+        </div>
 
-    <div class="form-group">
-        <label for="CoverImage">Cover Image (Optional)</label>
-        <input type="file" class="form-control" id="CoverImage" name="coverImage" />
-    </div>
 
+
+        <div class="col-3">
     @if (!string.IsNullOrEmpty(Model.CoverImage))
     {
         <div>
             <h5>Current Cover Image:</h5>
             <img src="~/movieimages/@Model.CoverImage" width="150" />
         </div>
+            }
+        </div>
+
+ <div class="col-3">
+    @if (!string.IsNullOrEmpty(Model.PosterImage))
+    {
+        <div>
+            <h5>Current Poster Image:</h5>
+            <img src="~/movieposters/@Model.PosterImage" width="150" />
+        </div>
     }
+        </div>
+
+    </div>
 
     <button type="submit" class="btn btn-primary">Save Changes</button>
     <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>

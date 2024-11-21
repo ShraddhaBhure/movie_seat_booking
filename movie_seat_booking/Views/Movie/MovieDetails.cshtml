@@ -1,0 +1,18 @@
+﻿<h3>Ratings</h3>
+<ul>
+    @foreach (var rating in Model.Ratings)
+    {
+        <li>@rating.Score by @rating.UserId</li>
+    }
+</ul>
+
+<h3>Reviews</h3>
+<ul>
+    @foreach (var review in Model.Reviews)
+    {
+        <li>
+            <strong>@review.UserId</strong>: @review.ReviewText
+            <small>Reviewed on @review.ReviewDate</small>
+        </li>
+    }
+</ul>

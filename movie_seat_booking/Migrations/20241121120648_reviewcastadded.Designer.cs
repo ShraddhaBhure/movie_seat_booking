@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using movie_seat_booking.Models;
 
@@ -11,9 +12,10 @@ using movie_seat_booking.Models;
 namespace movie_seat_booking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241121120648_reviewcastadded")]
+    partial class reviewcastadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,60 +99,6 @@ namespace movie_seat_booking.Migrations
                     b.ToTable("Movies");
                 });
 
-            modelBuilder.Entity("movie_seat_booking.Models.Rating", b =>
-                {
-                    b.Property<int>("RatingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RatingId"), 1L, 1);
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Score")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("RatingId");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("Ratings");
-                });
-
-            modelBuilder.Entity("movie_seat_booking.Models.Review", b =>
-                {
-                    b.Property<int>("ReviewId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReviewId"), 1L, 1);
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ReviewDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ReviewText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ReviewId");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("Reviews");
-                });
-
             modelBuilder.Entity("movie_seat_booking.Models.Seat", b =>
                 {
                     b.Property<int>("SeatId")
@@ -194,28 +142,6 @@ namespace movie_seat_booking.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("movie_seat_booking.Models.Rating", b =>
-                {
-                    b.HasOne("movie_seat_booking.Models.Movie", "Movie")
-                        .WithMany("Ratings")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-                });
-
-            modelBuilder.Entity("movie_seat_booking.Models.Review", b =>
-                {
-                    b.HasOne("movie_seat_booking.Models.Movie", "Movie")
-                        .WithMany("Reviews")
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-                });
-
             modelBuilder.Entity("movie_seat_booking.Models.Seat", b =>
                 {
                     b.HasOne("movie_seat_booking.Models.Booking", null)
@@ -238,10 +164,6 @@ namespace movie_seat_booking.Migrations
 
             modelBuilder.Entity("movie_seat_booking.Models.Movie", b =>
                 {
-                    b.Navigation("Ratings");
-
-                    b.Navigation("Reviews");
-
                     b.Navigation("Seat");
                 });
 #pragma warning restore 612, 618

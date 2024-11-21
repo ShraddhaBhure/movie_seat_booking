@@ -7,6 +7,8 @@ namespace movie_seat_booking.Models
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public DbSet<Seat> Seat{ get; set; }
         public DbSet<Booking> Bookings { get; set; }
         // Configure relationships in the OnModelCreating method
