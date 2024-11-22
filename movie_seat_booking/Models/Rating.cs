@@ -9,5 +9,6 @@
 
         // Navigation property
         public Movie Movie { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }

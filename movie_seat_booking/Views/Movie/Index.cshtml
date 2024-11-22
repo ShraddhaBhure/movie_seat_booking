@@ -1,19 +1,5 @@
 ﻿@model List<Movie>
-@* 
-<h2>Available Movies</h2>
 
-<ul>
-    @foreach (var movie in Model)
-    {
-        <li>
-            <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })">@movie.Title</a> - @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
-        </li>
-    }
-</ul>
- *@
-
-
-<h2>Available Movies</h2>
 
 <div class="row">
     @foreach (var movie in Model)
@@ -23,8 +9,6 @@
                 @if (!string.IsNullOrEmpty(movie.CoverImage))
                 {
                     <img src="~/movieimages/@movie.CoverImage" class="card-img-top" alt="@movie.Title" width="80" height="225" />
-
-
                 }
                 else
                 {
@@ -32,14 +16,58 @@
                 }
 
                 <div class="card-body">
-                   @*  <h5 class="card-title">@movie.Title</h5> *@
                     <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })">@movie.Title</a></strong>
                     <p class="card-text">
                         <strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
                     </p>
+
+                    <!-- Star Rating Section -->
+                    <div class="star-rating" data-movieid="@movie.MovieId">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="fa @(movie.Ratings.Any() && movie.Ratings.Average(r => r.Score) >= i ? "fa-star" : "fa-star-o")" data-value="@i"></i>
+                        }
+                    </div>
+
+                    <!-- Book Seats Button -->
                     <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-primary">Book Seats</a>
                 </div>
             </div>
         </div>
     }
 </div>
+
+<!-- jQuery Script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Handle the star click event
+    $(document).ready(function () {
+        $('.star-rating i').click(function () {
+            var rating = $(this).data('value');
+            var movieId = $(this).closest('.star-rating').data('movieid');
+
+            // Submit the rating via AJAX
+            $.ajax({
+                url: '@Url.Action("SubmitRating", "Movie")',
+                type: 'POST',
+                data: { movieId: movieId, score: rating },
+                success: function (response) {
+                    // Update the star rating display
+                    $('.star-rating[data-movieid="' + movieId + '"] i').each(function () {
+                        var starValue = $(this).data('value');
+                        if (starValue <= rating) {
+                            $(this).removeClass('fa-star-o').addClass('fa-star').addClass('selected');
+                        } else {
+                            $(this).removeClass('fa-star').removeClass('selected').addClass('fa-star-o');
+                        }
+                    });
+                },
+                error: function () {
+                    alert('There was an error submitting your rating. Please try again.');
+                }
+            });
+        });
+    });
+</script>
+

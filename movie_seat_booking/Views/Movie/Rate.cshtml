@@ -1,0 +1,40 @@
+﻿@model Movie
+
+<h2>Rate the Movie: @Model.Title</h2>
+
+<form asp-action="Rate" method="post">
+    <input type="hidden" name="id" value="@Model.MovieId" />
+
+    <div class="star-rating">
+        <!-- Here we create 5 stars, and when a user clicks a star, it will update the rating -->
+        <i class="fa @((Model.Ratings.Any() && Model.Ratings.Average(r => r.Score) >= 1) ? "fa-star" : "fa-star-o")" data-value="1"></i>
+        <i class="fa @((Model.Ratings.Any() && Model.Ratings.Average(r => r.Score) >= 2) ? "fa-star" : "fa-star-o")" data-value="2"></i>
+        <i class="fa @((Model.Ratings.Any() && Model.Ratings.Average(r => r.Score) >= 3) ? "fa-star" : "fa-star-o")" data-value="3"></i>
+        <i class="fa @((Model.Ratings.Any() && Model.Ratings.Average(r => r.Score) >= 4) ? "fa-star" : "fa-star-o")" data-value="4"></i>
+        <i class="fa @((Model.Ratings.Any() && Model.Ratings.Average(r => r.Score) >= 5) ? "fa-star" : "fa-star-o")" data-value="5"></i>
+    </div>
+
+    <input type="number" name="score" id="score" style="display: none;" />
+
+    <button type="submit" class="btn btn-primary">Submit Rating</button>
+</form>
+
+<script>
+    // Handle the star click event
+    document.querySelectorAll('.star-rating i').forEach(function (star) {
+        star.addEventListener('click', function () {
+            var value = this.getAttribute('data-value');
+            document.getElementById('score').value = value;
+            // Update the displayed stars based on selected value
+            document.querySelectorAll('.star-rating i').forEach(function (starInner) {
+                if (starInner.getAttribute('data-value') <= value) {
+                    starInner.classList.remove('fa-star-o');
+                    starInner.classList.add('fa-star');
+                } else {
+                    starInner.classList.remove('fa-star');
+                    starInner.classList.add('fa-star-o');
+                }
+            });
+        });
+    });
+</script>

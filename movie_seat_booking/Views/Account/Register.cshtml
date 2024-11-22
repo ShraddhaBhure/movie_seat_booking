@@ -1,0 +1,69 @@
+﻿@model movie_seat_booking.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h2>Register</h2>
+
+<form method="post" asp-action="Register" class="form-horizontal">
+    <div class="row">
+        <div class="col-4">
+        <label asp-for="FullName" class="control-label"></label>
+        <input asp-for="FullName" class="form-control" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+    </div>
+
+        <div class="col-4">
+        <label asp-for="Age" class="control-label"></label>
+        <input asp-for="Age" type="number" class="form-control" />
+        <span asp-validation-for="Age" class="text-danger"></span>
+    </div>
+
+        <div class="col-4">
+            <label asp-for="PhoneNumber" class="control-label"></label>
+            <input asp-for="PhoneNumber" type="number" class="form-control" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+    </div>   
+    <div class="row">
+        <div class="col-3">
+        <label asp-for="Sex" class="control-label"></label>
+        <select asp-for="Sex" class="form-control">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        <span asp-validation-for="Sex" class="text-danger"></span>
+    </div>
+
+        <div class="col-3">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" type="email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+   
+    <div class="col-3">
+        <label asp-for="Password" class="control-label"></label>
+        <input asp-for="Password" type="password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+        <div class="col-3">
+            <label for="Role">Role</label>
+            <select class="form-control" id="Role" name="Role">
+                @foreach (var role in Model.Roles)
+                {
+                    <option value="@role">@role</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Register</button>
+    </div>
+</form>
+
+<div>
+    <p>Already have an account? <a href="@Url.Action("Login", "Account")">Login here</a></p>
+</div>
+

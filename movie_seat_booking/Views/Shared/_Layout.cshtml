@@ -1,6 +1,11 @@
 ﻿@{
     var latestMovies = ViewBag.LatestMovies as List<Movie>;
 }
+@using Microsoft.AspNetCore.Identity
+@using movie_seat_booking.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,13 +16,10 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/movie_seat_booking.styles.css" asp-append-version="true" />
+   
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
          
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
-    
-   
-
 
     <style>
         .seat-layout {
@@ -73,37 +75,126 @@
             font-size: 16px;
             margin-bottom: 10px;
         }
+
+
+        .star-rating i {
+            font-size: 2rem; /* Adjust size of stars */
+            cursor: pointer;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        /* Empty star - black border */
+        .star-rating .fa-star-o {
+            color: transparent;
+            border: 2px solid black;
+            background-color: white;
+        }
+
+        /* Half star */
+        .star-rating .fa-star-half {
+            color: yellow;
+            background: linear-gradient(to left, yellow 50%, transparent 50%);
+            border: 2px solid black;
+        }
+
+        /* Filled star - yellow */
+        .star-rating .fa-star {
+            color: yellow;
+            border: 2px solid black;
+            background-color: yellow;
+        }
     </style>
 </head>
 <body>
     <header>
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">movie_seat_booking</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+             @* <nav class="navbar navbar-light" style="background-color: #e3f2fd;"> *@
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+
+                    <!-- Admin Menu -->
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Movie" asp-action="Index">Movies</a>
+                        </li>
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Admin
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </li>
+                    }
+                    <!-- Customer Menu -->
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Customer"))
+                    {
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Movie" asp-action="Index">Movies</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-controller="Index" asp-action="Rate">Rate Movie</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Movie" asp-action="Index">Movie</a>
+                            <a class="nav-link" href="/Customer/Profile">My Profile</a>
+                        </li>
+                    }
+
+                    <!-- Common Menu -->
+                    @if (!SignInManager.IsSignedIn(User))
+                    {
+
+                       <li class="nav-item">
+                         <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin Movie</a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                         </li>
-                    </ul>
-                </div>
+                        <li class="nav-item">
+                            <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <form id="logoutForm" action="/Account/Logout" method="post" class="d-inline">
+                                <button type="submit" class="nav-link btn btn-link">Logout</button>
+                            </form>
+                        </li>
+                    }
+
+
+                 
+                  
+                </ul>
+                <span class="text-muted">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        var userName = UserManager.GetUserName(User);
+                        <strong>Welcome, @userName!</strong>
+                    }
+                </span>
+                <form class="form-inline my-2 my-lg-0" method="get" action="@Url.Action("Search", "Movie")">
+                    <!-- Search input field, with the value pre-filled if there was a previous search -->
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search Movies" name="query" value="@Context.Request.Query["query"].ToString()" />
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
             </div>
         </nav>
-        <!-- Navbar End -->
+
+     <!-- Navbar End -->
         <!-- Banner Carousel -->
         @if (latestMovies != null && latestMovies.Count > 0)
         {
@@ -147,19 +238,31 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
+            <span class="text-muted">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    var userName = UserManager.GetUserName(User);
+                    <strong>Welcome, @userName!</strong>
+                }
+            </span>
+        </div>   <div class="container">
             &copy; 2024 - movie_seat_booking - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+    <!-- Bootstrap JS (including jQuery and Popper.js) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+
+
     @await RenderSectionAsync("Scripts", required: false)
     
-    <!-- Bootstrap JS (including jQuery and Popper.js) -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
- 
-
-     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>

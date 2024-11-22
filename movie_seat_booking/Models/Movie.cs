@@ -16,9 +16,11 @@
 
         // Navigation property for related seats
 
-        public List<Rating> Ratings { get; set; }   // A movie can have many ratings
+      //  public List<Rating> Ratings { get; set; }   // A movie can have many ratings
         public List<Review> Reviews { get; set; }
         public List<Seat> Seat { get; set; }
+        public ICollection<Rating> Ratings { get; set; } // Typically ICollection<T> is used for navigation properties
+
 
     }
 }

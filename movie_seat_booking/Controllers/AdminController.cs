@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using movie_seat_booking.Models;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace movie_seat_booking.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IWebHostEnvironment _webHostEnvironment;

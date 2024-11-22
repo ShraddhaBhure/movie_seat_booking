@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using movie_seat_booking.Models;
 using movie_seat_booking.Services;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace movie_seat_booking.Controllers
 {
@@ -18,9 +19,16 @@ namespace movie_seat_booking.Controllers
         }
 
         // View available movies
+        //public IActionResult Index()
+        //{
+        //    var movies = _context.Movies.ToList();
+        //    return View(movies);
+        //}
+
+
         public IActionResult Index()
         {
-            var movies = _context.Movies.ToList();
+            var movies = _context.Movies.Include(m => m.Ratings).ToList();
             return View(movies);
         }
         public async Task<IActionResult> MovieDetails(int id)
@@ -161,7 +169,126 @@ namespace movie_seat_booking.Controllers
 
             return View(booking);
         }
-   
 
+        // Search Action Method
+        public async Task<IActionResult> Search(string query)
+        {
+            // Start with the base query for movies
+            var moviesQuery = _context.Movies.AsQueryable();
 
-    } }
+            // Apply filters if the user has provided a search query
+            if (!string.IsNullOrEmpty(query))
+            {
+                moviesQuery = moviesQuery.Where(m =>
+                    m.Title.Contains(query) ||  // Search in Title
+                    m.Cast.Contains(query) ||   // Search in Cast
+                    m.Genre.Contains(query));   // Search in Genre
+            }
+
+            // Execute the query and fetch the results
+            var movies = await moviesQuery.ToListAsync();
+
+            // Return the search results to the view
+            return View(movies);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var movie = await _context.Movies.Include(m => m.Ratings)
+                                              .FirstOrDefaultAsync(m => m.MovieId == id);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            // Calculate the average rating
+            var averageRating = movie.Ratings.Any() ? movie.Ratings.Average(r => r.Score) : 0;
+
+            ViewBag.AverageRating = averageRating;  // Pass to view
+
+            return View(movie);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SubmitRating(int movieId, decimal score)
+        {
+            var movie = await _context.Movies.Include(m => m.Ratings).FirstOrDefaultAsync(m => m.MovieId == movieId);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            // Get the current user
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Check if the user has already rated the movie
+            var existingRating = await _context.Ratings
+                .FirstOrDefaultAsync(r => r.MovieId == movieId && r.UserId == userId);
+
+            if (existingRating != null)
+            {
+                // Update the existing rating
+                existingRating.Score = score;
+                _context.Ratings.Update(existingRating);
+            }
+            else
+            {
+                // Create a new rating
+                var rating = new Rating
+                {
+                    MovieId = movieId,
+                    Score = score,
+                    UserId = userId
+                };
+                _context.Ratings.Add(rating);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(); // Return a success response
+        }
+
+       
+        // GET: Movie/Rate/5 (Show the rating form for a specific movie)
+        public IActionResult Rate(int id)
+        {
+            var movie = _context.Movies.Include(m => m.Ratings).FirstOrDefault(m => m.MovieId == id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            return View(movie);
+        }
+
+        // POST: Movie/Rate/5 (Submit the rating for a specific movie)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Rate(int id, decimal score)
+        {
+            var movie = await _context.Movies.Include(m => m.Ratings).FirstOrDefaultAsync(m => m.MovieId == id);
+
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            // Assuming we have a way to get the current user
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // This requires the user to be logged in
+
+            // Create a new rating for the movie
+            var rating = new Rating
+            {
+                MovieId = id,
+                Score = score,
+                UserId = userId
+            };
+
+            // Save the rating to the database
+            _context.Ratings.Add(rating);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index)); // Redirect to the index page or movie details page
+        }
+    }
+}
