@@ -1,0 +1,9 @@
+﻿@model List<Review>
+
+@foreach (var review in Model)
+{
+    <div class="review">
+        <p><strong>@review.UserId</strong> (@review.ReviewDate.ToString("MMMM dd, yyyy"))</p>
+        <p>@review.ReviewText</p>
+    </div>
+}

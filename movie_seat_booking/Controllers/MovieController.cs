@@ -18,19 +18,31 @@ namespace movie_seat_booking.Controllers
             _context = context;
         }
 
-        // View available movies
+        // GET: Movie/Index
+        public async Task<IActionResult> Index()
+        {
+            // Fetch movies with their ratings and reviews
+            var movies = await _context.Movies
+                                       .Include(m => m.Ratings)    // Include Ratings
+                                       .Include(m => m.Reviews)    // Include Reviews
+                                       .ToListAsync();             // Asynchronously fetch all movies
+
+            return View(movies); // Pass the list of movies to the view
+        }
+
+
         //public IActionResult Index()
         //{
-        //    var movies = _context.Movies.ToList();
+        //    //var movies = _context.Movies.Include(m => m.Ratings).ToList();
+
+        //    // Fetch movies with their ratings and reviews
+        //    var movies =  _context.Movies
+        //                               .Include(m => m.Ratings)    // Include Ratings
+        //                               .Include(m => m.Reviews)    // Include Reviews
+        //                               .ToListAsync();             // Fetch all movies
         //    return View(movies);
         //}
 
-
-        public IActionResult Index()
-        {
-            var movies = _context.Movies.Include(m => m.Ratings).ToList();
-            return View(movies);
-        }
         public async Task<IActionResult> MovieDetails(int id)
         {
             var movie = await _context.Movies
@@ -67,33 +79,7 @@ namespace movie_seat_booking.Controllers
 
             return RedirectToAction("MovieDetails", new { id = movieId });
         }
-        public async Task<IActionResult> AddReview(int movieId, string reviewText)
-        {
-            var movie = await _context.Movies.FindAsync(movieId);
-
-            if (movie == null)
-            {
-                return NotFound();
-            }
-
-            var review = new Review
-            {
-                MovieId = movieId,
-                ReviewText = reviewText,
-                UserId = User.Identity.Name,
-                ReviewDate = DateTime.Now
-            };
-
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("MovieDetails", new { id = movieId });
-        }
-
-
-
-        // View details of a movie and available seats
-
+  
         public IActionResult BookSeats(int movieId)
         {
             var movie = _context.Movies
@@ -249,46 +235,38 @@ namespace movie_seat_booking.Controllers
             return Ok(); // Return a success response
         }
 
-       
-        // GET: Movie/Rate/5 (Show the rating form for a specific movie)
-        public IActionResult Rate(int id)
-        {
-            var movie = _context.Movies.Include(m => m.Ratings).FirstOrDefault(m => m.MovieId == id);
-            if (movie == null)
-            {
-                return NotFound();
-            }
-            return View(movie);
-        }
-
-        // POST: Movie/Rate/5 (Submit the rating for a specific movie)
+     
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Rate(int id, decimal score)
+        public IActionResult SubmitReview(int movieId, string reviewText)
         {
-            var movie = await _context.Movies.Include(m => m.Ratings).FirstOrDefaultAsync(m => m.MovieId == id);
+            if (string.IsNullOrEmpty(reviewText))
+            {
+                return BadRequest("Review cannot be empty.");
+            }
+
+            // Assume you have a Review model and your movie is fetched by its ID
+            var movie = _context.Movies.Include(m => m.Reviews).FirstOrDefault(m => m.MovieId == movieId);
 
             if (movie == null)
             {
                 return NotFound();
             }
 
-            // Assuming we have a way to get the current user
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // This requires the user to be logged in
-
-            // Create a new rating for the movie
-            var rating = new Rating
+            var review = new Review
             {
-                MovieId = id,
-                Score = score,
-                UserId = userId
+                UserId = User.Identity.Name,  // Or get user from session
+                ReviewText = reviewText,
+                ReviewDate = DateTime.Now,
+                MovieId = movieId
             };
 
-            // Save the rating to the database
-            _context.Ratings.Add(rating);
-            await _context.SaveChangesAsync();
+            movie.Reviews.Add(review);
+            _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index)); // Redirect to the index page or movie details page
+            return Ok(); // or return the updated list of reviews
         }
+
+      
+
     }
 }

@@ -1,0 +1,63 @@
+﻿@model MoviesIndexViewModel
+
+<div class="row">
+    @foreach (var movie in Model.Movies)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card" style="width: 18rem;">
+                @if (!string.IsNullOrEmpty(movie.CoverImage))
+                {
+                    <img src="~/movieimages/@movie.CoverImage" class="card-img-top" alt="@movie.Title" width="80" height="225" />
+                }
+                else
+                {
+                    <img src="~/images/default-cover.jpg" class="card-img-top" alt="Default Cover" width="80" height="225" />
+                }
+
+                <div class="card-body">
+                    <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })">@movie.Title</a></strong>
+                    <p class="card-text">
+                        <strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
+                    </p>
+
+                    <!-- Star Rating Section -->
+                    <div class="star-rating">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="fa fa-star @(movie.AverageRating >= i ? "checked" : "")" data-value="@i"></i>
+                        }
+                    </div>
+                    <p><strong>@movie.AverageRating</strong> ratings</p>
+                    <p><strong>@movie.TotalReviews</strong> reviews</p>
+
+                    <!-- Display Top 5 Reviews -->
+                    <h5>Top Reviews:</h5>
+                    <div>
+                        @foreach (var review in movie.Reviews)
+                        {
+                            <div class="review">
+                                <p><strong>@review.ReviewDate.ToString("MMMM dd, yyyy")</strong></p>
+                                <p>@review.ReviewText</p>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Pagination for Reviews -->
+                    <div class="pagination">
+                        @if (Model.CurrentPage > 1)
+                        {
+                            <a href="@Url.Action("AllMovies", new { page = Model.CurrentPage - 1 })" class="btn btn-secondary">Previous</a>
+                        }
+                        @if (Model.CurrentPage < Model.TotalPages)
+                        {
+                            <a href="@Url.Action("AllMovies", new { page = Model.CurrentPage + 1 })" class="btn btn-secondary">Next</a>
+                        }
+                    </div>
+
+                    <!-- Book Seats Button -->
+                    <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-primary">Book Seats</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

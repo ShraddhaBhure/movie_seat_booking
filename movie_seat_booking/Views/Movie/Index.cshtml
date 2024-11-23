@@ -1,6 +1,9 @@
 ﻿@model List<Movie>
 
 
+
+
+
 <div class="row">
     @foreach (var movie in Model)
     {
@@ -25,7 +28,26 @@
                     <div class="star-rating" data-movieid="@movie.MovieId">
                         @for (int i = 1; i <= 5; i++)
                         {
-                            <i class="fa @(movie.Ratings.Any() && movie.Ratings.Average(r => r.Score) >= i ? "fa-star" : "fa-star-o")" data-value="@i"></i>
+                            <i class="fa fa-star @(movie.Ratings.Any() && movie.Ratings.Average(r => r.Score) >= i ? "checked" : "")" data-value="@i"></i>
+                        }
+                    </div>
+                    <!-- Add Review Button -->
+                    <button class="btn btn-info add-review-btn" data-movieid="@movie.MovieId">Add Review</button>
+
+                    <!-- Review Section (Hidden initially) -->
+                    <div class="review-section" id="review-section-@movie.MovieId" style="display: none;">
+                        <textarea id="review-text-@movie.MovieId" class="form-control" placeholder="Write your review here..."></textarea>
+                        <button class="btn btn-primary submit-review-btn" data-movieid="@movie.MovieId">Submit Review</button>
+                    </div>
+
+                    <!-- Display Reviews -->
+                    <div class="reviews">
+                        @foreach (var review in movie.Reviews)
+                        {
+                            <div class="review">
+                                <p><strong>@review.UserId</strong> (@review.ReviewDate.ToString("MMMM dd, yyyy"))</p>
+                                <p>@review.ReviewText</p>
+                            </div>
                         }
                     </div>
 
@@ -41,8 +63,8 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    // Handle the star click event
     $(document).ready(function () {
+        // Handle the star click event for rating
         $('.star-rating i').click(function () {
             var rating = $(this).data('value');
             var movieId = $(this).closest('.star-rating').data('movieid');
@@ -68,6 +90,186 @@
                 }
             });
         });
+
+        // Toggle review section visibility
+        $('.add-review-btn').click(function () {
+            var movieId = $(this).data('movieid');
+            var reviewSection = $('#review-section-' + movieId);
+            reviewSection.toggle();  // Toggle visibility
+        });
+
+        // Handle review submission
+        $('.submit-review-btn').click(function () {
+            var movieId = $(this).data('movieid');
+            var reviewText = $('#review-text-' + movieId).val();
+
+            // Ensure the review is not empty
+            if (!reviewText.trim()) {
+                alert('Please write a review before submitting.');
+                return;
+            }
+
+            // Submit the review via AJAX
+            $.ajax({
+                url: '@Url.Action("SubmitReview", "Movie")',
+                type: 'POST',
+                data: { movieId: movieId, reviewText: reviewText },
+                success: function (response) {
+                    // Append the new review
+                    var reviewHtml = `
+                            <div class="review">
+                                <p><strong>Your username</strong> (${new Date().toLocaleDateString()})</p>
+                                <p>${reviewText}</p>
+                            </div>
+                        `;
+                    $('.reviews').prepend(reviewHtml);  // Add to the top of the reviews
+                    $('#review-text-' + movieId).val('');  // Clear the textarea
+                    $('#review-section-' + movieId).hide();  // Hide the review section
+                },
+                error: function () {
+                    alert('There was an error submitting your review. Please try again.');
+                }
+            });
+        });
     });
 </script>
 
+
+
+
+
+
+
+
+
+
+
+@* @model List<Movie>
+
+<div class="row">
+    @foreach (var movie in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card" style="width: 18rem;">
+                @if (!string.IsNullOrEmpty(movie.CoverImage))
+                {
+                    <img src="~/movieimages/@movie.CoverImage" class="card-img-top" alt="@movie.Title" width="80" height="225" />
+                }
+                else
+                {
+                    <img src="~/images/default-cover.jpg" class="card-img-top" alt="Default Cover" width="80" height="225" />
+                }
+
+                <div class="card-body">
+                    <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })">@movie.Title</a></strong>
+                    <p class="card-text">
+                        <strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
+                    </p>
+
+                    <!-- Star Rating Section -->
+                    <div class="star-rating" data-movieid="@movie.MovieId">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <i class="fa fa-star @(movie.Ratings.Any() && movie.Ratings.Average(r => r.Score) >= i ? "checked" : "")" data-value="@i"></i>
+                        }
+                    </div>
+
+                    <!-- Add Review Button -->
+                    <button class="btn btn-info add-review-btn" data-movieid="@movie.MovieId">Add Review</button>
+
+                    <!-- Review Section (Hidden initially) -->
+                    <div class="review-section" id="review-section-@movie.MovieId" style="display: none;">
+                        <textarea id="review-text-@movie.MovieId" class="form-control" placeholder="Write your review here..."></textarea>
+                        <button class="btn btn-primary submit-review-btn" data-movieid="@movie.MovieId">Submit Review</button>
+                    </div>
+
+                    <!-- Display Reviews -->
+                    <div class="reviews">
+                        @foreach (var review in movie.Reviews)
+                        {
+                            <div class="review">
+                                <p><strong>@review.UserId</strong> (@review.ReviewDate.ToString("MMMM dd, yyyy"))</p>
+                                <p>@review.ReviewText</p>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Book Seats Button -->
+                    <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-primary">Book Seats</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- jQuery Script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Handle the star click event
+    $(document).ready(function () {
+        $('.star-rating i').click(function () {
+            var rating = $(this).data('value');
+            var movieId = $(this).closest('.star-rating').data('movieid');
+
+            // Submit the rating via AJAX
+            $.ajax({
+                url: '@Url.Action("SubmitRating", "Movie")',  // Adjust URL for rating submission
+                type: 'POST',
+                data: { movieId: movieId, score: rating },
+                success: function (response) {
+                    // Update the star rating display
+                    $('.star-rating[data-movieid="' + movieId + '"] i').each(function () {
+                        var starValue = $(this).data('value');
+                        if (starValue <= rating) {
+                            $(this).removeClass('fa-star-o').addClass('fa-star').addClass('selected');
+                        } else {
+                            $(this).removeClass('fa-star').removeClass('selected').addClass('fa-star-o');
+                        }
+                    });
+                },
+                error: function () {
+                    alert('There was an error submitting your rating. Please try again.');
+                }
+            });
+        });
+    });
+
+    // Show the review textarea when 'Add Review' button is clicked
+    $('.add-review-btn').click(function () {
+        var movieId = $(this).data('movieid');
+        $('#review-section-' + movieId).toggle();  // Show or hide the review section
+    });
+
+    // Submit the review via AJAX
+    $('.submit-review-btn').click(function () {
+        var movieId = $(this).data('movieid');
+        var reviewText = $('#review-text-' + movieId).val();
+
+        if (reviewText.trim() === '') {
+            alert('Please write a review.');
+            return;
+        }
+
+        $.ajax({
+            url: '@Url.Action("AddReview", "Movie")',  // Adjust URL for review submission
+            type: 'POST',
+            data: {
+                movieId: movieId,
+                reviewText: reviewText
+            },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    location.reload();  // Reload the page to display the new review
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('An error occurred while submitting your review. Please try again.');
+            }
+        });
+    });
+</script>
+ *@

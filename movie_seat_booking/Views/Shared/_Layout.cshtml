@@ -16,10 +16,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/movie_seat_booking.styles.css" asp-append-version="true" />
-   
+    <!-- Make sure Font Awesome is loaded correctly -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-         
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
 
     <style>
         .seat-layout {
@@ -75,34 +76,25 @@
             font-size: 16px;
             margin-bottom: 10px;
         }
+        /* Highlight selected stars in orange */
+        .checked {
+            color: orange;
+        }
 
-
-        .star-rating i {
+        .star-rating .fa {
             font-size: 2rem; /* Adjust size of stars */
             cursor: pointer;
-            transition: color 0.2s ease, border-color 0.2s ease;
         }
 
-        /* Empty star - black border */
-        .star-rating .fa-star-o {
-            color: transparent;
-            border: 2px solid black;
-            background-color: white;
+        .review-section {
+            margin-top: 10px;
         }
 
-        /* Half star */
-        .star-rating .fa-star-half {
-            color: yellow;
-            background: linear-gradient(to left, yellow 50%, transparent 50%);
-            border: 2px solid black;
+        .review {
+            border-top: 1px solid #ddd;
+            padding: 5px 0;
         }
-
-        /* Filled star - yellow */
-        .star-rating .fa-star {
-            color: yellow;
-            border: 2px solid black;
-            background-color: yellow;
-        }
+     
     </style>
 </head>
 <body>
@@ -155,10 +147,13 @@
                     <!-- Common Menu -->
                     @if (!SignInManager.IsSignedIn(User))
                     {
-
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="AllMovies">All Movies</a>
+                        </li>
+@* 
                        <li class="nav-item">
                          <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home <span class="sr-only">(current)</span></a>
-                        </li>
+                        </li> *@
                         <li class="nav-item">
                             <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                         </li>
@@ -195,13 +190,13 @@
         </nav>
 
      <!-- Navbar End -->
-        <!-- Banner Carousel -->
-        @if (latestMovies != null && latestMovies.Count > 0)
+     @*    <!-- Banner Carousel -->
+        @if (Model.LatestMovies != null && Model.LatestMovies.Count > 0)
         {
             <div id="myCarousel" class="carousel slide" data-ride="carousel">
                 <!-- Indicators -->
                 <ol class="carousel-indicators">
-                    @for (int i = 0; i < latestMovies.Count; i++)
+                    @for (int i = 0; i < Model.LatestMovies.Count; i++)
                     {
                         <li data-target="#myCarousel" data-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
                     }
@@ -209,10 +204,10 @@
 
                 <!-- Wrapper for slides -->
                 <div class="carousel-inner" role="listbox">
-                    @for (int i = 0; i < latestMovies.Count; i++)
+                    @for (int i = 0; i < Model.LatestMovies.Count; i++)
                     {
                         <div class="carousel-item @(i == 0 ? "active" : "")">
-                            <img src="~/movieposters/@latestMovies[i].PosterImage" class="d-block w-100" alt="Movie Poster @i" />
+                            <img src="~/movieposters/@Model.LatestMovies[i].PosterImage" class="d-block w-100" alt="Movie Poster @i" />
                         </div>
                     }
                 </div>
@@ -229,6 +224,7 @@
             </div>
         }
         <!-- Banner Carousel End -->
+      *@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -237,15 +233,7 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            <span class="text-muted">
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    var userName = UserManager.GetUserName(User);
-                    <strong>Welcome, @userName!</strong>
-                }
-            </span>
-        </div>   <div class="container">
+         <div class="container">
             &copy; 2024 - movie_seat_booking - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
