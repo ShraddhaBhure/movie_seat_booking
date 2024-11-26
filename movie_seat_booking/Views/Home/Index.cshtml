@@ -41,10 +41,42 @@
 <br/>
 <br/>
 <!-- Movie Listings -->
-<div class="row">
+<!-- Services Section -->
+<section id="services" class="services section">
+
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Services</h2>
+        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+    </div><!-- End Section Title -->
+
+    <div class="container">
+    <br />
+    <br />
+
+    <br />
+    <br />
+
+
+    <!-- Section Title -->
+  @*   <div class="container section-title" data-aos="fade-up"> *@
+        <h2>Movies</h2>
+        <p>Book your shows Now</p>
+    </div><!-- End Section Title -->
+
+
+
+
+        <div class="container">
+
+            <div class="row gy-4">
     @foreach (var movie in Model.MoviesIndex.Movies)
     {
-        <div class="col-md-4 mb-4">
+      @*   <div class="col-md-4 mb-4"> *@
+
+                <div class="col-xl-3 col-lg-4 col-md-6" >
+            @*     <div class="col-xl-3 col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100"> *@
+
             <div class="card" style="width: 18rem;">
                 @if (!string.IsNullOrEmpty(movie.CoverImage))
                 {
@@ -55,7 +87,10 @@
                     <img src="~/images/default-cover.jpg" class="card-img-top" alt="Default Cover" width="80" height="225" />
                 }
 
-                <div class="card-body">
+           @*      <div class="card-body"> *@
+
+                        <div class="member-info">
+                            <div class="member-info-content">
                     <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })">@movie.Title</a></strong>
                     <p class="card-text">
                         <strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
@@ -97,7 +132,9 @@
 
                     <!-- Book Seats Button -->
                     <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-primary">Book Seats</a>
-                </div>
+                          
+                        </div>
+                    </div>
             </div>
         </div>
     }
@@ -114,3 +151,6 @@
         <a href="@Url.Action("Index", new { page = Model.MoviesIndex.CurrentPage + 1 })" class="btn btn-secondary">Next</a>
     }
 </div>
+
+    </div>
+ </section>

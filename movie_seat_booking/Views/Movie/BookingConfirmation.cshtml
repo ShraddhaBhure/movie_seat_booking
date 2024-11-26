@@ -1,5 +1,5 @@
 ﻿@model Booking
-
+@* 
 <h2>Booking Confirmation</h2>
 
 <p>Thank you for booking with us!</p>
@@ -15,4 +15,67 @@
         <li>Row @seat.RowName, Column @seat.ColumnName</li>
     }
 </ul>
-<a   asp-controller="Movie" asp-action="Index">Back to Movies </a>
+ *@
+
+
+<!-- About Section -->
+<section id="about" class="section about">
+
+    <div class="container">
+
+        <div class="row gy-3">
+
+            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                <img src="~/assets/img/about-img.svg" alt="" class="img-fluid">
+            </div>
+
+            <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
+
+                <h3>Thank you for booking with us!</h3>
+
+                <div class="about-content ps-0 ps-lg-3">
+                    <h3><strong>Movie Title:</strong> @Model.Movie.Title</h3>
+                  
+                   
+                    <ul>
+                        <li>
+                            <i class="bi bi-diagram-3"></i>
+                            <div>
+                               
+                                <h4>Movie Title:</h4>
+                                <p>@Model.Movie.Title</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="bi bi-fullscreen-exit"></i>
+                            <div>
+                                <h4>Showtime:</h4>
+                                <p>@Model.Movie.ShowTime.ToString("f")</p>
+                            </div>
+                        </li>
+
+                        <li>
+                            <i class="bi bi-diagram-3"></i>
+                            <div>
+
+                                <h4>Customer Name:</h4>
+                                <p> @Model.CustomerName</p>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <ul>
+                        @foreach (var seat in Model.BookedSeats)
+                        {
+                            <li>Row @seat.RowName, Column @seat.ColumnName</li>
+                        }
+                    </ul>
+                    <a asp-controller="Movie" asp-action="Index">Back to Movies </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section><!-- /About Section -->

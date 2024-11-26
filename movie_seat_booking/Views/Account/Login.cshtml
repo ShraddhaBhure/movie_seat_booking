@@ -4,37 +4,84 @@
     ViewData["Title"] = "Login";
 }
 
-<h2>Login</h2>
 
-<form method="post" asp-action="Login" class="form-horizontal">
-    <div class="form-group">
-        <label asp-for="Email" class="control-label"></label>
-        <input asp-for="Email" type="email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
+<!-- Login Section -->
 
-    <div class="form-group">
-        <label asp-for="Password" class="control-label"></label>
-        <input asp-for="Password" type="password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
+<section id="contact" class="contact section">
 
-    <div class="form-group">
-        <div class="form-check">
-            <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
-            <label class="form-check-label" for="RememberMe">
-                Remember me
-            </label>
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Login Here</h2>
+@*         <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+ *@    </div><!-- End Section Title -->
+
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4">
+
+            <div class="col-lg-5">
+
+                <div class="info-wrap">
+                    <div class="login-img">
+                        
+                        <img src="~/logo/loglogo.JPG" class="img-fluid">
+                    </div>
+
+                </div>
+            </div>
+            <br />
+            <br />
+            <br /> 
+            <br />
+            <br />
+            <br />
+            <div class="col-lg-7">
+                <br />
+                <br />
+                <br />
+                <form asp-action="Login" method="post" data-aos="fade-up" data-aos-delay="200">
+                  <div class="row gy-4">
+
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="pb-2"></label>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                            <input type="text" asp-for="Email" type="email" class="form-control" required="">
+                           
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="pb-2">Password</label>
+                            <input type="password" class="form-control" asp-for="Password" required="">
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                
+                        <div class="col-md-12">
+                            <div class="form-check">
+                                <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                                <label class="form-check-label" for="RememberMe">
+                                    Remember me
+                                </label>
+                            </div>
+                            <span asp-validation-for="RememberMe" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-12 text-center">
+                       
+
+                            <button type="submit" class="btn btn-primary">Login</button>
+
+                        </div>
+                        <div class="col-md-12">
+                            <p>Don't have an account? <a href="@Url.Action("Register", "Account")">Register here</a></p>
+
+                        </div>
+                    </div>
+                </form>
+            </div><!-- End Contact Form -->
+
         </div>
-        <span asp-validation-for="RememberMe" class="text-danger"></span>
+
     </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary">Login</button>
-    </div>
-</form>
-
-<div>
-    <p>Don't have an account? <a href="@Url.Action("Register", "Account")">Register here</a></p>
-</div>
-
+</section><!-- /Contact Section -->

@@ -1,11 +1,29 @@
 ﻿@model List<Movie>
 
+
+<section id="services" class="services section">
+
+    <!-- Section Title -->
+    
 <div class="row">
-   
+        <!-- End Section Title -->
+
+        <div class="container">
+            <br />
+            <br />
+
+            <br />
+            <br />
 @if (Model.Any())
 {
  @foreach (var movie in Model)
-    {
+                {
+                    <div class="container section-title" data-aos="fade-up">
+                        <h2>Movies For You </h2>
+
+                    </div>  <br />
+                    <br />  <br />
+                    
         <div class="col-md-4 mb-4">
             <div class="card" style="width: 18rem;">
                 @if (!string.IsNullOrEmpty(movie.CoverImage))
@@ -34,5 +52,11 @@
 }
 else
 {
+
+      <div class="container section-title" data-aos="fade-up">
+  
     <p>No movies found matching your search criteria.</p>
+    </div>
 }</div>
+</div>
+</section>

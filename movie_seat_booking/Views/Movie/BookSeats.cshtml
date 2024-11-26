@@ -1,5 +1,19 @@
 ﻿@model BookSeatsViewModel
 
+
+
+
+<section id="services" class="services section">
+
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Book Your Seat</h2>
+@*         <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+ *@    </div><!-- End Section Title -->
+
+    <div class="container">
+        
+        <h2>Movies</h2>
 <form method="post" asp-action="ConfirmBooking" id="bookingForm">
     <input type="hidden" name="movieId" value="@Model.Movie.MovieId" />
     <input type="hidden" id="selectedSeatIds" name="selectedSeatIds" />
@@ -19,10 +33,7 @@
 
                         if (seat != null)
                         {
-                            @*   <!-- If the seat is available, display a green button for selection -->
-                <button type="button" class="seat-button available" data-seat-id="@seat.SeatId" data-seat-name="Row @seat.RowName, Column @seat.ColumnName">
-                Row @seat.RowName, Column @seat.ColumnName
-                </button> *@
+                          
 
 
                             <button type="button" class="seat-button available" data-seat-id="@seat.SeatId" data-seat-name="Row @seat.RowName, Column @seat.ColumnName">
@@ -31,11 +42,7 @@
                         }
                         else
                         {
-                            @*  <!-- Display booked seats with a red button (disabled) -->
-                <button type="button" class="seat-button booked" disabled>
-                Row @row, Column @col (Booked)
-                </button>
-                *@
+           
 
                             <button type="button" class="seat-button booked" data-seat-id="3" data-seat-name="Row A, Column 3">
                                 <i class="fa-solid fa-couch"></i>   @* Row @row, Column @col (Booked) *@
@@ -46,19 +53,33 @@
             }
         </div>
     </div>
+            <br />
+            <br />   
+            <br />
+            <!-- Customer information input -->
+ 
+            <div class="col-md-6">
 
-    <!-- Customer information input -->
-    <div>
-        <label for="customerName">Your Name:</label>
-        <input type="text" name="customerName" id="customerName" required />
-    </div>
+                <label for="customerName">Your Name:</label>
+                <input type="text" class="form-control" name="customerName" id="customerName" required />
+            </div> 
+            <div class="col-md-12">
+                <a asp-area="" asp-controller="Movie" asp-action="BookSeats" class="btn btn-primary">Book Seats</a>
+            </div>
+            <br />
+            <div class="col-md-12">
+                <p>Don't have an account? <a href="@Url.Action("Index", "Movie")">Book More </a></p>
+       
+            </div>
 
-    <button type="submit">Confirm Booking</button>
-    <br />
-    <a asp-controller="Movie" asp-action="Index">Book more  </a>
+   
 
 </form>
 
+
+
+</div>
+</section>
 <script>
     // Handle the selection/deselection of seats
     const selectedSeats = new Set(); // Set to store selected seat IDs

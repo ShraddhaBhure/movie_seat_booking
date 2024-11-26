@@ -1,24 +1,36 @@
 ﻿@model MoviesIndexViewModel
+<section id="services" class="services section">
 
-<div class="row">
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Movies</h2>
+@*         <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+ *@    </div><!-- End Section Title -->
+ 
+
+    <div class="container">
+        <br />
+        <br />
+
+        <br />
+        <br />
+        <div class="row">
     @foreach (var movie in Model.Movies)
     {
-        <div class="col-md-4 mb-4">
-            <div class="card" style="width: 18rem;">
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card movie-card">
                 @if (!string.IsNullOrEmpty(movie.CoverImage))
                 {
-                    <img src="~/movieimages/@movie.CoverImage" class="card-img-top" alt="@movie.Title" width="80" height="225" />
+                    <img src="~/movieimages/@movie.CoverImage" class="card-img-top movie-img" alt="@movie.Title" />
                 }
                 else
                 {
-                    <img src="~/images/default-cover.jpg" class="card-img-top" alt="Default Cover" width="80" height="225" />
+                    <img src="~/images/default-cover.jpg" class="card-img-top movie-img" alt="Default Cover" />
                 }
 
                 <div class="card-body">
-                    <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })">@movie.Title</a></strong>
-                    <p class="card-text">
-                        <strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
-                    </p>
+                    <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="movie-title">@movie.Title</a></strong>
+                    <p class="card-text showtime"><strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")</p>
 
                     <!-- Star Rating Section -->
                     <div class="star-rating">
@@ -27,37 +39,115 @@
                             <i class="fa fa-star @(movie.AverageRating >= i ? "checked" : "")" data-value="@i"></i>
                         }
                     </div>
-                    <p><strong>@movie.AverageRating</strong> ratings</p>
-                    <p><strong>@movie.TotalReviews</strong> reviews</p>
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-between">
+                                    <!-- Ratings aligned to the left -->
+                                    <p class="ratings">
+                                        <strong>@movie.AverageRating</strong> ratings
+                                    </p>
+
+                                    <!-- Reviews aligned to the right -->
+                                    <p class="reviews">
+                                        <strong>@movie.TotalReviews</strong> reviews
+                                    </p>
+                                </div>
+                            </div>
+
+               @*      <p class="ratings"><strong>@movie.AverageRating</strong> ratings</p>
+                    <p class="reviews"><strong>@movie.TotalReviews</strong> reviews</p> *@
 
                     <!-- Display Top 5 Reviews -->
                     <h5>Top Reviews:</h5>
-                    <div>
-                        @foreach (var review in movie.Reviews)
+                    <div class="reviews-section">
+                        @foreach (var review in movie.Reviews.Take(5))  
                         {
                             <div class="review">
-                                <p><strong>@review.ReviewDate.ToString("MMMM dd, yyyy")</strong></p>
-                                <p>@review.ReviewText</p>
+                                <p class="review-date"><strong>@review.ReviewDate.ToString("MMMM dd, yyyy")</strong></p>
+                                <p class="review-text">@review.ReviewText</p>
                             </div>
                         }
                     </div>
 
-                    <!-- Pagination for Reviews -->
-                    <div class="pagination">
-                        @if (Model.CurrentPage > 1)
-                        {
-                            <a href="@Url.Action("AllMovies", new { page = Model.CurrentPage - 1 })" class="btn btn-secondary">Previous</a>
-                        }
-                        @if (Model.CurrentPage < Model.TotalPages)
-                        {
-                            <a href="@Url.Action("AllMovies", new { page = Model.CurrentPage + 1 })" class="btn btn-secondary">Next</a>
-                        }
-                    </div>
-
                     <!-- Book Seats Button -->
-                    <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-primary">Book Seats</a>
+                    <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-primary book-seats-btn">Book Seats</a>
                 </div>
             </div>
         </div>
     }
 </div>
+
+  </div>
+    </section>
+
+
+<!-- Add this to your head or just before closing the body tag -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // When the 'Get Reviews' button is clicked
+        $(".get-reviews-btn").on("click", function () {
+            var movieId = $(this).data("movie-id");
+            var page = 1; // Start from page 1
+            loadReviews(movieId, page);
+
+            // Show pagination controls
+            $("#pagination-" + movieId).show();
+        });
+
+        // When 'Next' button is clicked for pagination
+        $(".next-reviews-btn").on("click", function () {
+            var movieId = $(this).data("movie-id");
+            var currentPage = $(this).data("page");
+            var nextPage = currentPage + 1;
+            loadReviews(movieId, nextPage);
+
+            // Update the page number for the 'Next' button
+            $(this).data("page", nextPage);
+            $(".prev-reviews-btn").data("page", nextPage - 1);
+        });
+
+        // When 'Previous' button is clicked for pagination
+        $(".prev-reviews-btn").on("click", function () {
+            var movieId = $(this).data("movie-id");
+            var currentPage = $(this).data("page");
+            var prevPage = currentPage - 1;
+            loadReviews(movieId, prevPage);
+
+            // Update the page number for the 'Previous' button
+            $(this).data("page", prevPage);
+            $(".next-reviews-btn").data("page", prevPage + 1);
+        });
+
+        // Function to load reviews via AJAX
+        function loadReviews(movieId, page) {
+            $.ajax({
+                url: '/Movie/GetReviews',
+                type: 'GET',
+                data: { movieId: movieId, page: page },
+                success: function (data) {
+                    if (data.success) {
+                        // Append reviews HTML into the review section
+                        $("#reviews-" + movieId).html(data.reviewsHtml);
+
+                        // Hide 'Next' and 'Previous' buttons if there are no more reviews
+                        if (data.currentPage >= data.totalReviews) {
+                            $(".next-reviews-btn").hide();
+                        }
+                        else {
+                            $(".next-reviews-btn").show();
+                        }
+                        if (data.currentPage <= 1) {
+                            $(".prev-reviews-btn").hide();
+                        }
+                        else {
+                            $(".prev-reviews-btn").show();
+                        }
+                    }
+                },
+                error: function (err) {
+                    console.error("Error loading reviews:", err);
+                }
+            });
+        }
+    });
+</script>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.EntityFrameworkCore;
 using movie_seat_booking.Models;
 using System.Diagnostics;
+using System.Text;
 
 namespace movie_seat_booking.Controllers
 {
@@ -17,6 +18,8 @@ namespace movie_seat_booking.Controllers
             _context = context;
             _logger = logger;
         }
+
+
         public async Task<IActionResult> Index(int page = 1)
         {
             const int reviewsPerPage = 5;
@@ -64,59 +67,6 @@ namespace movie_seat_booking.Controllers
 
             return View(viewModel);  // Passing the combined view model to the view
         }
-
-        //public IActionResult Index()
-        //{
-        //    var latestMovies = _context.Movies
-        //                               .Where(m => !string.IsNullOrEmpty(m.PosterImage))  // Ensure there's a poster image
-        //                               .OrderByDescending(m => m.ReleaseDate)  // Order by ReleaseDate, most recent first
-        //                               .Take(4)  // Get the latest 4 movies
-        //                               .ToList();
-
-        //    // Passing to ViewBag so that it's available in Layout
-        //    ViewBag.LatestMovies = latestMovies;
-
-        //    return View(latestMovies);
-        //}
-
-        //// GET: Movie/Index
-        //public async Task<IActionResult> Index(int page = 1)
-        //{
-        //    const int reviewsPerPage = 5;
-
-        //    // Fetching movies with their average rating and review count
-        //    var movies = await _context.Movies
-        //        .Include(m => m.Ratings)
-        //        .Include(m => m.Reviews)
-        //        .Select(m => new MovieViewModel
-        //        {
-        //            MovieId = m.MovieId,
-        //            Title = m.Title,
-        //            CoverImage = m.CoverImage,
-        //            ShowTime = m.ShowTime,
-        //            Reviews = m.Reviews.OrderByDescending(r => r.ReviewDate).Skip((page - 1) * reviewsPerPage).Take(reviewsPerPage).ToList(),
-        //            TotalReviews = m.Reviews.Count,
-        //            AverageRating = m.Ratings.Any() ? m.Ratings.Average(r => r.Score) : 0,
-        //            RatingCount = m.Ratings.Count
-        //        })
-        //        .ToListAsync();
-
-        //    // Calculate TotalPages based on reviews per movie
-        //    var totalPages = movies.Any()
-        //        ? (int)Math.Ceiling(movies.First().TotalReviews / (double)reviewsPerPage)
-        //        : 1;
-
-        //    // Creating the view model
-        //    var viewModel = new MoviesIndexViewModel
-        //    {
-        //        Movies = movies,
-        //        CurrentPage = page,
-        //        TotalPages = totalPages
-        //    };
-
-        //    return View(viewModel); // Pass the view model to the view
-        //}
-
 
 
         public async Task<IActionResult> AllMovies(int page = 1)
