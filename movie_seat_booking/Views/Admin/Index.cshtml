@@ -42,7 +42,16 @@
                 </td>
                 <td>
                     <a href="@Url.Action("Edit", new { id = movie.MovieId })">Edit</a> |
-                    <a href="@Url.Action("Delete", new { id = movie.MovieId })">Delete</a>
+                    <a href="@Url.Action("Delete", new { id = movie.MovieId })">Delete</a>|
+                    <a href="@Url.Action("ManageSeats", new { id = movie.MovieId })">ManageSeats</a>|
+
+                    <a href="@Url.Action("CreateSeats", new { movieId = movie.MovieId })">Create Seats</a>|
+                    <a href="@Url.Action("ViewSeats", new { movieId = movie.MovieId })">View Seats</a> 
+                       
+                          @*  <form action="@Url.Action("CreateSeats", "Admin")" method="post" style="display:inline;">
+                        <input type="hidden" name="movieId" value="@movie.MovieId" />
+                        <button type="submit" class="btn btn-primary">Create Seats</button>
+                          </form> *@
                 </td>
             </tr>
         }

@@ -1,14 +1,14 @@
 .seat-layout {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 5 columns */
-    grid-gap: 10px;
-    margin-top: 20px;
+    grid-template-columns: repeat(10, 1fr); /*5 columns  */
+    grid-gap: 5px;
+    margin-top: 5px;
 }
 
 .row {
-    display: flex;
+   /* display: flex;*/
     justify-content: space-around;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .seat-button {
@@ -28,26 +28,34 @@
 
     .seat-button i {
         margin-right: 8px;
-        font-size: 18px; /* Adjust icon size */
+        font-size: 18px;  /*Adjust icon size */
     }
 
 .available {
-    background-color: #4CAF50; /* Green for available */
+    background-color: #4CAF50;  /*Green for available */
     color: white;
 }
 
 .selected {
-    background-color: #FF5722; /* Red for selected */
+    background-color: #FF5722;  /*Red for selected */
     color: white;
 }
 
 .booked {
-    background-color: #D3D3D3; /* Light gray for booked */
+    background-color: #D3D3D3;  /*Light gray for booked */
     color: white;
     cursor: not-allowed;
 }
+.booked {
+    background-color: red;
+}
 
-label, input {
+.available {
+    background-color: green;
+}
+
+
+/*label, input {
     font-size: 16px;
     margin-bottom: 10px;
 }
@@ -165,10 +173,10 @@ label, input {
 }
 
 /* Book Seats Button */
-.book-seats-btn {
+/*.book-seats-btn {
     margin-top: 15px;
 }
-
+*/
 /* Responsive adjustments */
 @media (max-width: 1200px) {
     .col-lg-3 {

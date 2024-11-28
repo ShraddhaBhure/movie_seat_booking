@@ -1,0 +1,115 @@
+﻿@* @model BookSeatsViewModel
+
+@{
+    ViewData["Title"] = "Manage Seats - " + Model.Movie.Title;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h3>Available Seats for Movie: @Model.Movie.Title</h3>
+
+<form method="post" asp-action="UpdateSeats" asp-route-movieId="@Model.Movie.MovieId">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Row</th>
+                <th>Column</th>
+                <th>Available</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var seat in Model.AvailableSeats)
+            {
+                <tr>
+                    <td>@seat.RowName</td>
+                    <td>@seat.ColumnName</td>
+                    <td>
+                        <input type="checkbox" name="selectedSeats" value="@seat.SeatId" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Update Seats</button>
+</form>
+ *@
+
+
+@model Movie
+
+<h2>@Model.Title - Seat Layout</h2>
+
+<!-- Seat layout grid -->
+<div class="seat-layout">
+    @for (int row = 1; row <= Model.Seat.Max(s => s.RowName); row++)   
+    {
+        <div class="row">
+            @for (int col = 1; col <= Model.Seat.Where(s => s.RowName == row).Max(s => s.ColumnName); col++)  
+            {
+                // Find the seat for the current row and column
+                var seat = Model.Seat.FirstOrDefault(s => s.RowName == row && s.ColumnName == col);
+
+                if (seat != null)
+                {
+                    // Render the seat button
+                    <button type="button" 
+                            class="seat-button @(seat.IsBooked ? "booked" : "available")" 
+                            data-seat-id="@seat.SeatId" 
+                            data-seat-name="Row @seat.RowName, Column @seat.ColumnName"
+                            @(seat.IsBooked ? "disabled" : "")> <!-- Disable booked seats -->
+                        <i class="fa-solid fa-couch"></i>
+                    </button>
+                }
+                else
+                {
+                    // Render empty placeholder if the seat doesn't exist in the database
+                    <button type="button" class="seat-button empty" disabled>
+                        <i class="fa-solid fa-couch"></i>
+                    </button>
+                }
+            }
+        </div>
+    }
+</div>
+
+<!-- Total Price and Selected Seats -->
+<div>
+    <p>Total Price: <span id="totalPrice">0</span></p>
+    <form id="bookingForm" action="@Url.Action("ConfirmBooking", "Booking")" method="post">
+        <input type="hidden" id="selectedSeatIds" name="selectedSeatIds" />
+        <button type="submit" class="btn btn-primary">Confirm Booking</button>
+    </form>
+</div>
+
+<script>
+    let seatPrice = @Model.Price;  // Movie price is passed to the view model
+    let selectedSeats = new Set(); // Set to store selected seat IDs
+
+    function updateTotalPrice() {
+        let totalPrice = selectedSeats.size * seatPrice;
+        document.getElementById('totalPrice').innerText = "Total Price: " + totalPrice.toFixed(2);
+    }
+
+    // Handle the selection/deselection of seats
+    const seatButtons = document.querySelectorAll('.seat-button.available');
+
+    seatButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const seatId = this.getAttribute('data-seat-id');
+
+            // Toggle the selected state
+            if (selectedSeats.has(seatId)) {
+                selectedSeats.delete(seatId); // Remove from selected set
+                this.classList.remove('selected'); // Remove selected style
+            } else {
+                selectedSeats.add(seatId); // Add to selected set
+                this.classList.add('selected'); // Add selected style
+            }
+
+            // Update the hidden input field with the selected seat IDs
+            document.getElementById('selectedSeatIds').value = Array.from(selectedSeats).join(',');
+            updateTotalPrice();  // Update total price whenever the selection changes
+        });
+    });
+</script>
+

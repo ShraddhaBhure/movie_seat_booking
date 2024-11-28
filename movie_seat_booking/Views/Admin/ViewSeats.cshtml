@@ -1,0 +1,126 @@
+﻿@* @model Movie  
+
+<h2>Seats for @Model.Title</h2>
+
+<div>
+    <h3>Movie Details</h3>
+    <p><strong>Genre:</strong> @Model.Genre</p>
+    <p><strong>Showtime:</strong> @Model.ShowTime</p>
+    <p><strong>Price:</strong> @Model.Price</p>
+    <p><strong>Rows:</strong> @Model.Seat.Count / 10 (Assuming 10 columns per row)</p> 
+
+    <h4>Seat Layout</h4>
+    <div class="seat-grid">
+        @foreach (var seat in Model.Seat.OrderBy(s => s.RowName).ThenBy(s => s.ColumnName))
+        {
+            <div class="seat-item @(seat.IsBooked ? "booked" : "available")">
+                <strong>@seat.RowName, @seat.ColumnName</strong>
+                <br />
+                @if (seat.IsBooked)
+                {
+                    <span>Booked</span>
+                }
+                else
+                {
+                    <form method="post" action="@Url.Action("BookSeat", "Admin")">
+                        <input type="hidden" name="seatId" value="@seat.SeatId" />
+                        <input type="hidden" name="movieId" value="@Model.MovieId" />
+                        <button type="submit" class="btn btn-success btn-sm">Book</button>
+                    </form>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+
+ *@
+ @model ViewSeatsViewModel
+@{
+    ViewData["Title"] = "View Seats for " + Model.Movie.Title;
+}
+
+<h2>Seat Layout for @Model.Movie.Title</h2>
+
+@foreach (var rowGroup in Model.RowGroups)
+{
+    <h3>@rowGroup.GroupName</h3>
+    <p>Price per seat: @rowGroup.Price.ToString("C")</p>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Row/Col</th>
+                @for (int col = 1; col <= rowGroup.Seats.Max(s => s.ColumnName); col++)
+                {
+                    <th>@col</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int row = 1; row <= rowGroup.Seats.Max(s => s.RowName); row++)
+            {
+                <tr>
+                    <td>@row</td>
+                    @for (int col = 1; col <= rowGroup.Seats.Max(s => s.ColumnName); col++)
+                    {
+                        var seat = rowGroup.Seats.FirstOrDefault(s => s.RowName == row && s.ColumnName == col);
+                        if (seat != null)
+                        {
+                            var seatClass = seat.IsBooked ? "booked" : "available";
+                            <td class="@seatClass" style="text-align:center;">
+                                @if (seat.IsBooked)
+                                {
+                                    <span class="text-danger">Booked</span>
+                                }
+                                else
+                                {
+                                    <span class="text-success">Available</span>
+                                }
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="empty-seat" style="text-align:center;"></td>
+                        }
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<!-- Optionally add buttons to book or manage the seats -->
+<button class="btn btn-primary">Book Selected Seats</button>
+
+<!-- Style for seat status -->
+<style>
+    .available {
+        background-color: #28a745; /* Green for available seats */
+        color: white;
+        cursor: pointer;
+    }
+
+    .booked {
+        background-color: #dc3545; /* Red for booked seats */
+        color: white;
+    }
+
+    .empty-seat {
+        background-color: #f8f9fa; /* Light grey for empty cells */
+    }
+
+    .table th, .table td {
+        text-align: center;
+        padding: 10px;
+    }
+
+    .table-bordered {
+        border: 2px solid #ccc;
+        border-collapse: collapse;
+    }
+
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #ccc;
+        }
+</style>

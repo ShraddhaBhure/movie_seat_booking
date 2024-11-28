@@ -79,11 +79,114 @@ namespace movie_seat_booking.Controllers
 
             return RedirectToAction("MovieDetails", new { id = movieId });
         }
-  
+
+        //public IActionResult BookSeats(int movieId)
+        //{
+        //    var movie = _context.Movies
+        //                        .Include(m => m.Seat)
+        //                        .FirstOrDefault(m => m.MovieId == movieId);
+
+        //    if (movie == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Filter out the seats that are already booked
+        //    var availableSeats = movie.Seat.Where(s => !s.IsBooked).ToList();
+
+        //    return View(new BookSeatsViewModel
+        //    {
+        //        Movie = movie,
+        //        AvailableSeats = availableSeats
+        //    });
+        //}
+
+
+        //////------------------ Handle seat booking
+
+
+        //public IActionResult BookSeats(int movieId)
+        //{
+        //    var movie = _context.Movies
+        //                        .Include(m => m.Seat)
+        //                        .FirstOrDefault(m => m.MovieId == movieId);
+
+        //    if (movie == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Filter out the seats that are already booked
+        //    var availableSeats = movie.Seat.Where(s => !s.IsBooked).ToList();
+
+        //    return View(new BookSeatsViewModel
+        //    {
+        //        Movie = movie,
+        //        AvailableSeats = availableSeats,
+        //        TotalPrice = 0  // Initially, no seats are selected
+        //    });
+        //}
+        //[HttpPost]
+        //public IActionResult ConfirmBooking(int movieId, string selectedSeatIds, string customerName)
+        //{
+        //    var movie = _context.Movies
+        //                        .Include(m => m.Seat)
+        //                        .FirstOrDefault(m => m.MovieId == movieId);
+
+        //    if (movie == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Split the selected seat IDs and book the seats
+        //    var seatIds = selectedSeatIds.Split(',').Select(int.Parse).ToList();
+        //    var seatsToBook = movie.Seat.Where(s => seatIds.Contains(s.SeatId)).ToList();
+
+        //    foreach (var seat in seatsToBook)
+        //    {
+        //        seat.IsBooked = true;  // Mark seat as booked
+        //    }
+
+        //    // Calculate the total price
+        //    decimal totalPrice = seatsToBook.Count * movie.Price;
+
+        //    // Create a booking record
+        //    var booking = new Booking
+        //    {
+        //        CustomerName = customerName,
+        //        MovieId = movie.MovieId,
+        //        BookedSeats = seatsToBook,
+        //        BookedPrice = totalPrice,
+        //        BookingTime = DateTime.Now  // You may want to add the current time
+        //    };
+
+        //    _context.Bookings.Add(booking);
+        //    _context.SaveChanges();
+
+        //    // Redirect to BookingConfirmation action with the booking ID
+        //    return RedirectToAction("BookingConfirmation", new { bookingId = booking.BookingId });
+        //}
+        //public IActionResult BookingConfirmation(int bookingId)
+        //{
+        //    var booking = _context.Bookings
+        //                          .Include(b => b.BookedSeats)  // Include booked seats
+        //                          .ThenInclude(bs => bs.Movie)  // Include the Movie data
+        //                          .FirstOrDefault(b => b.BookingId == bookingId);
+
+        //    if (booking == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(booking);
+        //}
+
+        /////-----------------------------------
         public IActionResult BookSeats(int movieId)
         {
             var movie = _context.Movies
-                                .Include(m => m.Seat)
+                                .Include(m => m.RowGroups)  // Include the related RowGroups (with their seats)
+                                .ThenInclude(rg => rg.Seats) // Include the related Seats for each RowGroup
                                 .FirstOrDefault(m => m.MovieId == movieId);
 
             if (movie == null)
@@ -91,24 +194,68 @@ namespace movie_seat_booking.Controllers
                 return NotFound();
             }
 
-            // Filter out the seats that are already booked
-            var availableSeats = movie.Seat.Where(s => !s.IsBooked).ToList();
+            // Get all available seats
+            var availableSeats = movie.RowGroups
+                                      .SelectMany(rg => rg.Seats.Where(s => !s.IsBooked))
+                                      .ToList();
 
             return View(new BookSeatsViewModel
             {
                 Movie = movie,
-                AvailableSeats = availableSeats
+                AvailableSeats = availableSeats,  // All available seats
+                TotalPrice = 0  // Initially, no seats are selected
             });
         }
+        //[HttpPost]
+        //public IActionResult ConfirmBooking(int movieId, string[] selectedSeats, string customerName)
+        //{
+        //    var movie = _context.Movies
+        //                        .Include(m => m.RowGroups)
+        //                        .ThenInclude(rg => rg.Seats)
+        //                        .FirstOrDefault(m => m.MovieId == movieId);
 
+        //    if (movie == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-        //// Handle seat booking
+        //    // Find the selected seats
+        //    var seatsToBook = movie.RowGroups
+        //                           .SelectMany(rg => rg.Seats)
+        //                           .Where(s => selectedSeats.Contains(s.SeatId.ToString()))
+        //                           .ToList();
 
+        //    // Mark seats as booked
+        //    foreach (var seat in seatsToBook)
+        //    {
+        //        seat.IsBooked = true;  // Mark each seat as booked
+        //    }
+
+        //    // Calculate the total price by summing the price of the row groups of selected seats
+        //    decimal totalPrice = seatsToBook.Sum(s => s.RowGroup.Price);
+
+        //    // Create a new booking record
+        //    var booking = new Booking
+        //    {
+        //        CustomerName = customerName,
+        //        MovieId = movie.MovieId,
+        //        BookedSeats = seatsToBook,
+        //        BookedPrice = totalPrice,
+        //        BookingTime = DateTime.Now
+        //    };
+
+        //    _context.Bookings.Add(booking);
+        //    _context.SaveChanges();
+
+        //    // Redirect to booking confirmation
+        //    return RedirectToAction("BookingConfirmation", new { bookingId = booking.BookingId });
+        //}
         [HttpPost]
-        public IActionResult ConfirmBooking(int movieId, string selectedSeatIds, string customerName)
+        public IActionResult ConfirmBooking(int movieId, string[] selectedSeats, string customerName)
         {
             var movie = _context.Movies
-                                .Include(m => m.Seat)
+                                .Include(m => m.RowGroups)
+                                .ThenInclude(rg => rg.Seats)
                                 .FirstOrDefault(m => m.MovieId == movieId);
 
             if (movie == null)
@@ -116,45 +263,92 @@ namespace movie_seat_booking.Controllers
                 return NotFound();
             }
 
-            // Split the selected seat IDs and book the seats
-            var seatIds = selectedSeatIds.Split(',').Select(int.Parse).ToList();
-            var seatsToBook = movie.Seat.Where(s => seatIds.Contains(s.SeatId)).ToList();
+            // Find the selected seats from the database
+            var seatsToBook = movie.RowGroups
+                                   .SelectMany(rg => rg.Seats)
+                                   .Where(s => selectedSeats.Contains(s.SeatId.ToString()))
+                                   .ToList();
 
+            // Mark seats as booked
             foreach (var seat in seatsToBook)
             {
-                seat.IsBooked = true;  // Mark seat as booked
+                seat.IsBooked = true;  // Mark each seat as booked
             }
 
-            //Create a booking record(assuming you have a Booking model)
+            // Calculate the total price by summing the price of the row groups of selected seats
+            decimal totalPrice = seatsToBook.Sum(s => s.RowGroup.Price);
+
+            // Create a new booking record
             var booking = new Booking
             {
                 CustomerName = customerName,
                 MovieId = movie.MovieId,
-                BookedSeats = seatsToBook
+                BookedSeats = seatsToBook,
+                BookedPrice = totalPrice,
+                BookingTime = DateTime.Now
             };
 
+            // Add booking to the database
             _context.Bookings.Add(booking);
             _context.SaveChanges();
 
-            ///Redirect to BookingConfirmation action with the booking ID
+            // Return to booking confirmation page
             return RedirectToAction("BookingConfirmation", new { bookingId = booking.BookingId });
         }
 
-        ////// Action to display the booking confirmation page
-        public IActionResult BookingConfirmation(int bookingId)
+
+        //public IActionResult BookingConfirmation(int bookingId)
+        //{
+        //    var booking = _context.Bookings
+        //                          .Include(b => b.BookedSeats)
+        //                          .ThenInclude(bs => bs.RowGroup)  // Include RowGroup to get the price
+        //                          .ThenInclude(bs => bs.Movie)
+        //                          .FirstOrDefault(b => b.BookingId == bookingId);
+
+        //    if (booking == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(booking);
+        //}
+
+        //public IActionResult BookingConfirmation(int bookingId)
+        //{
+        //    var booking = _context.Bookings
+        //                          .Include(b => b.Movie)  // Ensure the Movie is included
+        //                          .Include(b => b.BookedSeats)
+        //                          .ThenInclude(bs => bs.RowGroup)  // Include RowGroup to get the price
+        //                          .ThenInclude(rg => rg.Movie)   // Include the Movie in RowGroup (if needed)
+        //                          .FirstOrDefault(b => b.BookingId == bookingId);
+
+        //    if (booking == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(booking);
+        //}
+        public IActionResult BookingConfirmation(int bookingId, decimal totalPrice)
         {
             var booking = _context.Bookings
-                                   .Include(b => b.BookedSeats)  // Include booked seats
-                                   .ThenInclude(bs => bs.Movie)  // Include the Movie data for each seat (optional)
-                                   .FirstOrDefault(b => b.BookingId == bookingId);
+                                  .Include(b => b.Movie)  // Ensure the Movie is included
+                                  .Include(b => b.BookedSeats)
+                                  .ThenInclude(bs => bs.RowGroup)  // Include RowGroup to get the price
+                                  .FirstOrDefault(b => b.BookingId == bookingId);
 
             if (booking == null)
             {
                 return NotFound();
             }
 
+            // Pass the total price to the view
+            ViewData["TotalPrice"] = totalPrice;
+
             return View(booking);
         }
+
+
 
         // Search Action Method
         public async Task<IActionResult> Search(string query)

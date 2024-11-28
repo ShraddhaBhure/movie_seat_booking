@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
-
+                                    
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -20,6 +20,12 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 //// Add Application Services (if you have them)
 //builder.Services.AddScoped<IService, Service>();
 
+//builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+//// Register IEmailSender as a transient service
+//builder.Services.AddTransient<IEmailSender, EmailSender>();
+//builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+//builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddSingleton<SmsService>();
 builder.Services.AddControllersWithViews();
 

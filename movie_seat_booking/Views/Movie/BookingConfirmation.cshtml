@@ -1,4 +1,4 @@
-﻿@model Booking
+﻿
 @* 
 <h2>Booking Confirmation</h2>
 
@@ -18,7 +18,7 @@
  *@
 
 
-<!-- About Section -->
+@* <!-- About Section -->
 <section id="about" class="section about">
 
     <div class="container">
@@ -51,6 +51,8 @@
                             <div>
                                 <h4>Showtime:</h4>
                                 <p>@Model.Movie.ShowTime.ToString("f")</p>
+
+                                <p>Total Price: @Model.BookedPrice</p>
                             </div>
                         </li>
 
@@ -78,4 +80,71 @@
 
     </div>
 
-</section><!-- /About Section -->
+</section> *@
+
+
+                        @model Booking
+
+@* <h2>Booking Confirmation</h2>
+
+<p>Booking ID: @Model.BookingId</p>
+<p>Customer Name: @Model.CustomerName</p>
+<p>Movie: @Model.Movie.Title</p>
+<p>Booking Time: @Model.BookingTime</p>
+<p>Total Price: @Model.BookedPrice.ToString("C")</p>
+
+<h3>Booked Seats</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Row</th>
+            <th>Column</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var seat in Model.BookedSeats)
+        {
+            <tr>
+                <td>@seat.RowName</td>
+                <td>@seat.ColumnName</td>
+                <td>@seat.RowGroup.Price.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+ *@
+
+
+
+
+
+<h2>Booking Confirmation</h2>
+
+<p>Booking ID: @Model.BookingId</p>
+<p>Customer Name: @Model.CustomerName</p>
+<p>Movie: @Model.Movie.Title</p>
+<p>Booking Time: @Model.BookingTime</p>
+<p>Total Price: @ViewData["TotalPrice"].ToString()</p>
+<h3>Booked Seats</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Row</th>
+            <th>Column</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var seat in Model.BookedSeats)
+        {
+            <tr>
+                <td>@seat.RowName</td>
+                <td>@seat.ColumnName</td>
+                <td>@seat.RowGroup.Price.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>

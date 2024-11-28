@@ -1,0 +1,16 @@
+﻿@model movie_seat_booking.Models.RowGroup
+
+@{
+    ViewData["Title"] = "Delete Row Group";
+}
+
+<h2>Are you sure you want to delete this row group?</h2>
+
+<div>
+    <strong>@Model.GroupName</strong> - Price: @Model.Price
+</div>
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="@Url.Action("IndexRows")" class="btn btn-secondary">Cancel</a>
+</form>

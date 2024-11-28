@@ -1,0 +1,56 @@
+﻿@model ViewSeatsViewModel
+
+@{
+    ViewData["Title"] = "View Seats for " + Model.Movie.Title;
+}
+
+<h2>Seat Layout for @Model.Movie.Title</h2>
+<p>Group: @Model.RowGroup.GroupName</p>
+<p>Price per seat: @Model.RowGroup.Price.ToString("C")</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Row/Col</th>
+            @for (int col = 1; col <= Model.Seats.Max(s => s.ColumnName); col++)
+            {
+                <th>@col</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @for (int row = 1; row <= Model.Seats.Max(s => s.RowName); row++)
+        {
+            <tr>
+                <td>@row</td>
+                @for (int col = 1; col <= Model.Seats.Max(s => s.ColumnName); col++)
+                {
+                    var seat = Model.Seats.FirstOrDefault(s => s.RowName == row && s.ColumnName == col);
+                    if (seat != null)
+                    {
+                        var seatClass = seat.IsBooked ? "booked" : "available";
+                        <td class="@seatClass" style="text-align:center;">
+                            @if (seat.IsBooked)
+                            {
+                                <span class="text-danger">Booked</span>
+                            }
+                            else
+                            {
+                                <span class="text-success">Available</span>
+                            }
+                            <br />
+                            Price: @Model.RowGroup.Price.ToString("C")
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="empty-seat" style="text-align:center;"></td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Optionally add buttons to book or manage the seats -->
+<button class="btn btn-primary">Book Selected Seats</button>

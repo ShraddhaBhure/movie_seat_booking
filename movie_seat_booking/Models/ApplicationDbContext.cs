@@ -7,13 +7,15 @@ namespace movie_seat_booking.Models
     //public class ApplicationDbContext : DbContext
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :      base(options) { }
 
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Seat> Seat{ get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<RowGroup> RowGroups { get; set; }
+ 
         // Configure relationships in the OnModelCreating method
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,6 +44,13 @@ namespace movie_seat_booking.Models
                 .HasOne(s => s.Movie)
                 .WithMany(m => m.Seat)
                 .HasForeignKey(s => s.MovieId);
+            // Define relationships and constraints if needed
+            modelBuilder.Entity<Seat>()
+                .HasOne(s => s.RowGroup)
+                .WithMany(rg => rg.Seats)
+                .HasForeignKey(s => s.RowGroupId);
+
+       
         }
     }
 }

@@ -1,0 +1,36 @@
+﻿@model movie_seat_booking.Models.RowGroup
+
+@{
+    ViewData["Title"] = "Row Group Details";
+}
+
+<h2>@Model.GroupName</h2>
+
+<div>
+    <strong>Price: </strong>@Model.Price
+</div>
+
+<h3>Seats</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Row</th>
+            <th>Column</th>
+            <th>Is Booked</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var seat in Model.Seats)
+        {
+            <tr>
+                <td>@seat.RowName</td>
+                <td>@seat.ColumnName</td>
+                <td>@(seat.IsBooked ? "Booked" : "Available")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("EditRows", new { id = Model.RowGroupId })">Edit</a> |
+<a href="@Url.Action("DeleteRows", new { id = Model.RowGroupId })">Delete</a> |
+<a href="@Url.Action("IndexRows")">Back to List</a>

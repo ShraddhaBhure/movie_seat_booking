@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using movie_seat_booking.Models;
 
@@ -11,9 +12,10 @@ using movie_seat_booking.Models;
 namespace movie_seat_booking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241127085758_newprice")]
+    partial class newprice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -365,31 +367,6 @@ namespace movie_seat_booking.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("movie_seat_booking.Models.RowGroup", b =>
-                {
-                    b.Property<int>("RowGroupId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RowGroupId"), 1L, 1);
-
-                    b.Property<string>("GroupName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("RowGroupId");
-
-                    b.HasIndex("MovieId");
-
-                    b.ToTable("RowGroups");
-                });
-
             modelBuilder.Entity("movie_seat_booking.Models.Seat", b =>
                 {
                     b.Property<int>("SeatId")
@@ -410,9 +387,6 @@ namespace movie_seat_booking.Migrations
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RowGroupId")
-                        .HasColumnType("int");
-
                     b.Property<int>("RowName")
                         .HasColumnType("int");
 
@@ -421,8 +395,6 @@ namespace movie_seat_booking.Migrations
                     b.HasIndex("BookingId");
 
                     b.HasIndex("MovieId");
-
-                    b.HasIndex("RowGroupId");
 
                     b.ToTable("Seat");
                 });
@@ -519,16 +491,9 @@ namespace movie_seat_booking.Migrations
                     b.Navigation("Movie");
                 });
 
-            modelBuilder.Entity("movie_seat_booking.Models.RowGroup", b =>
-                {
-                    b.HasOne("movie_seat_booking.Models.Movie", null)
-                        .WithMany("RowGroups")
-                        .HasForeignKey("MovieId");
-                });
-
             modelBuilder.Entity("movie_seat_booking.Models.Seat", b =>
                 {
-                    b.HasOne("movie_seat_booking.Models.Booking", "Booking")
+                    b.HasOne("movie_seat_booking.Models.Booking", null)
                         .WithMany("BookedSeats")
                         .HasForeignKey("BookingId");
 
@@ -538,17 +503,7 @@ namespace movie_seat_booking.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("movie_seat_booking.Models.RowGroup", "RowGroup")
-                        .WithMany("Seats")
-                        .HasForeignKey("RowGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-
                     b.Navigation("Movie");
-
-                    b.Navigation("RowGroup");
                 });
 
             modelBuilder.Entity("movie_seat_booking.Models.Booking", b =>
@@ -562,14 +517,7 @@ namespace movie_seat_booking.Migrations
 
                     b.Navigation("Reviews");
 
-                    b.Navigation("RowGroups");
-
                     b.Navigation("Seat");
-                });
-
-            modelBuilder.Entity("movie_seat_booking.Models.RowGroup", b =>
-                {
-                    b.Navigation("Seats");
                 });
 #pragma warning restore 612, 618
         }

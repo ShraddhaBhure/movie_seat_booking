@@ -1,0 +1,33 @@
+﻿@model IEnumerable<movie_seat_booking.Models.RowGroup>
+
+@{
+    ViewData["Title"] = "Row Groups List";
+}
+
+<h2>Row Groups</h2>
+
+<a href="@Url.Action("CreateRows")">Create New Row Group</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Group Name</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rowGroup in Model)
+        {
+            <tr>
+                <td>@rowGroup.GroupName</td>
+                <td>@rowGroup.Price</td>
+                <td>
+                    <a href="@Url.Action("DetailsRows", new { id = rowGroup.RowGroupId })">Details</a> |
+                    <a href="@Url.Action("EditRows", new { id = rowGroup.RowGroupId })">Edit</a> |
+                    <a href="@Url.Action("DeleteRows", new { id = rowGroup.RowGroupId })">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

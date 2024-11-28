@@ -1,0 +1,19 @@
+﻿@model movie_seat_booking.Models.RowGroup
+
+@{
+    ViewData["Title"] = "Edit Row Group";
+}
+
+<h2>Edit Row Group</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label for="GroupName">Group Name</label>
+        <input type="text" class="form-control" id="GroupName" name="GroupName" value="@Model.GroupName" required />
+    </div>
+    <div class="form-group">
+        <label for="Price">Price</label>
+        <input type="number" class="form-control" id="Price" name="Price" value="@Model.Price" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>

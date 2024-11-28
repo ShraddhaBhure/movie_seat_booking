@@ -20,7 +20,8 @@
         public List<Review> Reviews { get; set; }
         public List<Seat> Seat { get; set; }
         public ICollection<Rating> Ratings { get; set; } // Typically ICollection<T> is used for navigation properties
-
+                                                         // Add the RowGroups to a Movie
+        public ICollection<RowGroup> RowGroups { get; set; }  // New property to manage row groups
 
     }
 }
