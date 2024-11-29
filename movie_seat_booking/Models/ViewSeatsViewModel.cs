@@ -6,6 +6,6 @@
         public RowGroup RowGroup { get; set; }
         public List<Seat> Seats { get; set; }
         public ICollection<RowGroup> RowGroups { get; set; }  // List of RowGroups with their Seats
-
+     //   public List<int> SelectedSeatIds { get; set; }  // List of selected seat IDs
     }
 }

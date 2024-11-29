@@ -1,307 +1,4 @@
-﻿@* @model BookSeatsViewModel
-
-<section id="services" class="services section">
-
-    <!-- Section Title -->
-    <div class="container section-title" data-aos="fade-up">
-        <h2>Book Your Seat</h2>
-  </div>
-
-    <div class="container">
-        
-        <h2>Movies</h2>
-<form method="post" asp-action="ConfirmBooking" id="bookingForm">
-    <input type="hidden" name="movieId" value="@Model.Movie.MovieId" />
-    <input type="hidden" id="selectedSeatIds" name="selectedSeatIds" />
-
-    <div>
-        <h3>Select Seats:</h3>
-
-        <!-- Seat layout grid -->
-        <div class="seat-layout">
-            @for (int row = 1; row <= 5; row++)
-            {
-                <div class="row">
-                    @for (int col = 1; col <= 5; col++)
-                    {
-                        // Find the seat for the current row and column
-                        var seat = Model.AvailableSeats.FirstOrDefault(s => s.RowName == row && s.ColumnName == col);
-
-                        if (seat != null)
-                        {
-                          
-
-                            <button type="button" class="seat-button available" data-seat-id="@seat.SeatId" data-seat-name="Row @seat.RowName, Column @seat.ColumnName">
-                                <i class="fa-solid fa-couch"></i>  
-                            </button>
-                        }
-                        else
-                        {
-           
-                            <button type="button" class="seat-button booked" data-seat-id="3" data-seat-name="Row A, Column 3">
-                                <i class="fa-solid fa-couch"></i>   
-                            </button>
-                        }
-                    }
-                </div>
-            }
-        </div>
-    </div>
-            <br />
-            <br />   
-            <br />
-
-            <!-- Customer information input -->
-            <div class="col-md-6">
-
-                <label for="customerName">Your Name:</label>
-                <input type="text" class="form-control" name="customerName" id="customerName" required />
-            </div> 
-
-            <div class="col-md-12">
-                <a asp-area="" asp-controller="Movie" asp-action="BookSeats" class="btn btn-primary">Book Seats</a>
-            </div>
-            <br />
-            <div class="col-md-12">
-                <p>Don't have an account? <a href="@Url.Action("Index", "Movie")">Book More </a></p>
-       
-            </div>
-
-</form>
-
-</div>
-</section> *@
-@* <script>
-    let seatPrice = @Model.Movie.Price;  // Assuming movie price is available
-    let selectedSeats = [];
-
-    function updateTotalPrice() {
-        let totalPrice = selectedSeats.length * seatPrice;
-        document.getElementById('totalPrice').innerText = "Total Price: " + totalPrice.ToFixed(2);
-    }
-
-    function toggleSeatSelection(seatId) {
-        const index = selectedSeats.indexOf(seatId);
-        if (index > -1) {
-            selectedSeats.splice(index, 1);  // Remove the seat if it's already selected
-        } else {
-            selectedSeats.push(seatId);  // Add the seat to the selected list
-        }
-        updateTotalPrice();
-    }
-</script>
-
-<script>
-    // Handle the selection/deselection of seats
-    const selectedSeats = new Set(); // Set to store selected seat IDs
-
-    // Select all available seat buttons
-    const seatButtons = document.querySelectorAll('.seat-button.available');
-
-    seatButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const seatId = this.getAttribute('data-seat-id');
-
-            // Toggle the selected state
-            if (selectedSeats.has(seatId)) {
-                selectedSeats.delete(seatId); // Remove from selected set
-                this.classList.remove('selected'); // Remove selected style
-            } else {
-                selectedSeats.add(seatId); // Add to selected set
-                this.classList.add('selected'); // Add selected style
-            }
-
-            // Update the hidden input field with the selected seat IDs
-            document.getElementById('selectedSeatIds').value = Array.from(selectedSeats).join(',');
-        });
-    });
-</script>
-
- *@
-
-
-
-
- @model BookSeatsViewModel
-@* 
-@{
-    ViewData["Title"] = "Book Seats for " + Model.Movie.Title;
-}
-
-<h2>Book Seats for @Model.Movie.Title</h2>
-
-<form method="post" action="@Url.Action("ConfirmBooking", new { movieId = Model.Movie.MovieId })">
-    <div class="row">
-        <div class="col-md-12">
-            <h3>Select Your Seats</h3>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Row</th>
-                        <th>Column</th>
-                        <th>Price</th>
-                        <th>Select</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var seat in Model.AvailableSeats)
-                    {
-                        <tr>
-                            <td>@seat.RowName</td>
-                            <td>@seat.ColumnName</td>
-                            <td>@seat.RowGroup.Price.ToString("C")</td>
-                            <td>
-                                <input type="checkbox" name="selectedSeats" value="@seat.SeatId" />
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-
-            <div>
-                <strong>Total Price: </strong><span id="totalPrice">0</span> <!-- This will show the total price -->
-            </div>
-        </div>
-    </div>
-
-    <div>
-        <label for="customerName">Your Name</label>
-        <input type="text" id="customerName" name="customerName" required />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Confirm Booking</button>
-</form>
-
-<script>
-    // JavaScript to calculate total price based on selected seats
-    const checkboxes = document.querySelectorAll("input[name='selectedSeats']");
-    const totalPriceSpan = document.getElementById("totalPrice");
-
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateTotalPrice);
-    });
-
-    function updateTotalPrice() {
-        let totalPrice = 0;
-        checkboxes.forEach(checkbox => {
-            if (checkbox.checked) {
-                const price = parseFloat(checkbox.closest('tr').querySelector('td:nth-child(3)').innerText.replace('$', '').trim());
-                totalPrice += price;
-            }
-        });
-        totalPriceSpan.innerText = totalPrice.toFixed(2); // Update the total price
-    }
-</script>
- *@
-
-
-
-@* 
-@{
-    ViewData["Title"] = "Book Seats for " + Model.Movie.Title;
-}
-
-<h2>Book Seats for @Model.Movie.Title</h2>
-
-<form method="post" action="@Url.Action("ConfirmBooking", new { movieId = Model.Movie.MovieId })">
-    <div class="row">
-        <div class="col-md-12">
-            <h3>Select Your Seats</h3>
-
-            <!-- Seat Layout -->
-            @foreach (var rowGroup in Model.Movie.RowGroups) 
-            {
-                <div class="row-group">
-                    <h4>@rowGroup.GroupName (Price: @rowGroup.Price.ToString("C"))</h4>
-                    
-                    <div class="seat-layout">
-                        @foreach (var seat in rowGroup.Seats.OrderBy(s => s.RowName).ThenBy(s => s.ColumnName))
-                        {
-                            <button type="button" class="seat-button available" data-seat-id="@seat.SeatId" data-seat-name="Row @seat.RowName, Column @seat.ColumnName" data-price="@seat.RowGroup.Price">
-                                <i class="fas fa-chair"></i> <br/>
-                             <small>Row @seat.RowName</small><br/>
-                                <small>Col @seat.ColumnName</small> 
-                            </button>
-                        }
-                    </div>
-                </div>
-            }
-
-            <!-- Display Total Price -->
-            <div>
-                <strong>Total Price: </strong><span id="totalPrice">0.00</span> <!-- This will show the total price -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Customer Name -->
-    <div>
-        <label for="customerName">Your Name</label>
-        <input type="text" id="customerName" name="customerName" required />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Confirm Booking</button>
-</form>
-
-<script>
-    const selectedSeats = new Set(); // To keep track of selected seats
-    let totalPrice = 0;  // To track the total price of selected seats
-
-    // Select all available seat buttons
-    const seatButtons = document.querySelectorAll('.seat-button.available');
-
-    seatButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const seatId = this.getAttribute('data-seat-id');
-            const seatName = this.getAttribute('data-seat-name');
-            const price = parseFloat(this.getAttribute('data-price'));  // Get the price from the data attribute
-
-            // Toggle the selected state
-            if (selectedSeats.has(seatId)) {
-                // If seat is already selected, deselect it
-                selectedSeats.delete(seatId); // Remove from the set
-                totalPrice -= price;  // Subtract the price from the total
-                this.classList.remove('selected');  // Remove the selected style
-            } else {
-                // If seat is not selected, add it to the set
-                selectedSeats.add(seatId); // Add to the set
-                totalPrice += price;  // Add the price to the total
-                this.classList.add('selected');  // Add the selected style
-            }
-
-            // Update the total price in the view
-            document.getElementById('totalPrice').innerText = totalPrice.toFixed(2);
-
-            // Update the hidden input field with the selected seat IDs
-            document.getElementById('selectedSeatIds').value = Array.from(selectedSeats).join(',');
-        });
-    });
-</script>
-
- *@
-
-
-@* <script>
-    // JavaScript to calculate total price based on selected seats
-    const checkboxes = document.querySelectorAll("input[name='selectedSeats']");
-    const totalPriceSpan = document.getElementById("totalPrice");
-
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateTotalPrice);
-    });
-
-    function updateTotalPrice() {
-        let totalPrice = 0;
-        checkboxes.forEach(checkbox => {
-            if (checkbox.checked) {
-                const price = parseFloat(checkbox.closest('tr').querySelector('td:nth-child(3)').innerText.replace('$', '').trim());
-                totalPrice += price;
-            }
-        });
-        totalPriceSpan.innerText = totalPrice.toFixed(2); // Update the total price
-    }
-</script>
- *@
+﻿@model BookSeatsViewModel
 @{
     ViewData["Title"] = "Book Seats for " + Model.Movie.Title;
 }
@@ -315,7 +12,8 @@
         <div class="col-md-12">
             <h3>Select Your Seats</h3>
 
-            <!-- Seat Layout -->
+             <!-- Seat Layout -->
+
             @foreach (var rowGroup in Model.Movie.RowGroups)
             {
                 <div class="row-group">
@@ -324,19 +22,28 @@
                     <div class="seat-layout">
                         @foreach (var seat in rowGroup.Seats.OrderBy(s => s.RowName).ThenBy(s => s.ColumnName))
                         {
-                            <button type="button" class="seat-button available" data-seat-id="@seat.SeatId" data-seat-name="Row @seat.RowName, Column @seat.ColumnName" data-price="@seat.RowGroup.Price">
-                                <i class="fas fa-chair"></i> <br />
-                                <small>Row @seat.RowName</small><br />
-                                <small>Col @seat.ColumnName</small>
-                            </button>
+                            <label class="seat-label">
+                                <input type="checkbox"
+                                       class="seat-checkbox"
+                                       data-seat-id="@seat.SeatId"
+                                       data-seat-name="Row @seat.RowName, Column @seat.ColumnName"
+                                       data-price="@seat.RowGroup.Price"
+                                       name="selectedSeats"
+                                       value="@seat.SeatId"
+                                @(seat.IsBooked ? "disabled" : "") />
+                                <img src="~/logo/chair.png" alt="Chair Image" class="seat-image" />
+                             @*    <span>Row @seat.RowName, Column @seat.ColumnName</span> *@
+                            </label>
+                            <br />
                         }
                     </div>
                 </div>
             }
 
+
             <!-- Display Total Price -->
             <div>
-                <strong>Total Price: </strong><span id="totalPrice">0.00</span> <!-- This will show the total price -->
+                <strong>Total Price: </strong><span id="totalPrice">0.00</span>
             </div>
         </div>
     </div>
@@ -351,37 +58,26 @@
 </form>
 
 <script>
-    const selectedSeats = new Set(); // To keep track of selected seats
-    let totalPrice = 0;  // To track the total price of selected seats
+    // For calculating total price and updating the selected seats (client-side)
+    const seatCheckboxes = document.querySelectorAll('.seat-checkbox');
+    const selectedSeats = new Set();  // To store selected seat ids
+    let totalPrice = 0;
 
-    // Select all available seat buttons
-    const seatButtons = document.querySelectorAll('.seat-button.available');
+    seatCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function () {
+            const price = parseFloat(this.getAttribute('data-price'));
 
-    seatButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const seatId = this.getAttribute('data-seat-id');
-            const seatName = this.getAttribute('data-seat-name');
-            const price = parseFloat(this.getAttribute('data-price'));  // Get the price from the data attribute
-
-            // Toggle the selected state
-            if (selectedSeats.has(seatId)) {
-                // If seat is already selected, deselect it
-                selectedSeats.delete(seatId); // Remove from the set
-                totalPrice -= price;  // Subtract the price from the total
-                this.classList.remove('selected');  // Remove the selected style
-                this.style.backgroundColor = '';  // Remove red color when deselected
+            if (this.checked) {
+                selectedSeats.add(this.value);  // Add seat to the selection
+                totalPrice += price;  // Add price to the total
             } else {
-                // If seat is not selected, add it to the set
-                selectedSeats.add(seatId); // Add to the set
-                totalPrice += price;  // Add the price to the total
-                this.classList.add('selected');  // Add the selected style
-                this.style.backgroundColor = 'red';  // Make the button red when selected
+                selectedSeats.delete(this.value);  // Remove seat from selection
+                totalPrice -= price;  // Subtract price from total
             }
 
-            // Update the total price in the view
             document.getElementById('totalPrice').innerText = totalPrice.toFixed(2);
 
-            // Update the hidden input field with the selected seat IDs
+            // Update the hidden input with selected seat ids
             document.getElementById('selectedSeatIds').value = Array.from(selectedSeats).join(',');
         });
     });

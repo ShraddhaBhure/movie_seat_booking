@@ -1,97 +1,12 @@
-﻿
-@* 
+﻿@model Booking
+
 <h2>Booking Confirmation</h2>
-
-<p>Thank you for booking with us!</p>
-
-<p><strong>Customer Name:</strong> @Model.CustomerName</p>
-<p><strong>Movie Title:</strong> @Model.Movie.Title</p>  <!-- Now you can access Movie details -->
-<p><strong>Showtime:</strong> @Model.Movie.ShowTime.ToString("f")</p>
-
-<h3>Booked Seats:</h3>
-<ul>
-    @foreach (var seat in Model.BookedSeats)
-    {
-        <li>Row @seat.RowName, Column @seat.ColumnName</li>
-    }
-</ul>
- *@
-
-
-@* <!-- About Section -->
-<section id="about" class="section about">
-
-    <div class="container">
-
-        <div class="row gy-3">
-
-            <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
-                <img src="~/assets/img/about-img.svg" alt="" class="img-fluid">
-            </div>
-
-            <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="200">
-
-                <h3>Thank you for booking with us!</h3>
-
-                <div class="about-content ps-0 ps-lg-3">
-                    <h3><strong>Movie Title:</strong> @Model.Movie.Title</h3>
-                  
-                   
-                    <ul>
-                        <li>
-                            <i class="bi bi-diagram-3"></i>
-                            <div>
-                               
-                                <h4>Movie Title:</h4>
-                                <p>@Model.Movie.Title</p>
-                            </div>
-                        </li>
-                        <li>
-                            <i class="bi bi-fullscreen-exit"></i>
-                            <div>
-                                <h4>Showtime:</h4>
-                                <p>@Model.Movie.ShowTime.ToString("f")</p>
-
-                                <p>Total Price: @Model.BookedPrice</p>
-                            </div>
-                        </li>
-
-                        <li>
-                            <i class="bi bi-diagram-3"></i>
-                            <div>
-
-                                <h4>Customer Name:</h4>
-                                <p> @Model.CustomerName</p>
-                            </div>
-                        </li>
-                    </ul>
-
-                    <ul>
-                        @foreach (var seat in Model.BookedSeats)
-                        {
-                            <li>Row @seat.RowName, Column @seat.ColumnName</li>
-                        }
-                    </ul>
-                    <a asp-controller="Movie" asp-action="Index">Back to Movies </a>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-</section> *@
-
-
-                        @model Booking
-
-@* <h2>Booking Confirmation</h2>
 
 <p>Booking ID: @Model.BookingId</p>
 <p>Customer Name: @Model.CustomerName</p>
 <p>Movie: @Model.Movie.Title</p>
-<p>Booking Time: @Model.BookingTime</p>
-<p>Total Price: @Model.BookedPrice.ToString("C")</p>
+<p>Booking Time: @Model.BookingTime.ToString("dd-MM-yyyy hh:mm:ss tt")</p>
+<p>Total Price: @Model.BookedPrice.ToString("C")</p> <!-- Show total price here -->
 
 <h3>Booked Seats</h3>
 <table class="table table-bordered">
@@ -114,37 +29,3 @@
     </tbody>
 </table>
 
-
- *@
-
-
-
-
-
-<h2>Booking Confirmation</h2>
-
-<p>Booking ID: @Model.BookingId</p>
-<p>Customer Name: @Model.CustomerName</p>
-<p>Movie: @Model.Movie.Title</p>
-<p>Booking Time: @Model.BookingTime</p>
-<p>Total Price: @ViewData["TotalPrice"].ToString()</p>
-<h3>Booked Seats</h3>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Row</th>
-            <th>Column</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var seat in Model.BookedSeats)
-        {
-            <tr>
-                <td>@seat.RowName</td>
-                <td>@seat.ColumnName</td>
-                <td>@seat.RowGroup.Price.ToString("C")</td>
-            </tr>
-        }
-    </tbody>
-</table>

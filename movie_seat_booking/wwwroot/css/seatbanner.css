@@ -1,8 +1,11 @@
 .seat-layout {
     display: grid;
-    grid-template-columns: repeat(10, 1fr); /*5 columns  */
-    grid-gap: 5px;
-    margin-top: 5px;
+    /*grid-template-columns: repeat(10, 1fr); 5 columns  */
+    grid-template-columns: repeat(30, 00.5fr);
+    /* grid-gap: 5px;
+
+/*    grid-gap: 5px;*/
+    margin-top: 3px;
 }
 
 .row {
@@ -46,9 +49,9 @@
     color: white;
     cursor: not-allowed;
 }
-.booked {
+/*.booked {
     background-color: red;
-}
+}*/
 
 .available {
     background-color: green;
@@ -71,6 +74,7 @@
 
 .review-section {
     margin-top: 10px;
+
 }
 
 .review {
@@ -201,3 +205,86 @@
         width: 100%;
     }
 }
+/* Style for the custom checkbox */
+.seat-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.seat-checkbox {
+    display: none; /* Hide the checkbox itself */
+}
+
+.seat-image {
+    width: 32px; /* Size of the image */
+    height: 32px; /* Size of the image */
+    margin-right: 10px; /* Space between image and label text */
+}
+
+.seat-checkbox:checked + .seat-image {
+    border: 2px solid green; /* Style when checked */
+}
+
+input[type="checkbox"].seat-checkbox:disabled + .seat-image {
+    opacity: 0.5; /* Dim the image when the seat is disabled */
+}
+/* Custom checkbox style */
+input[type="checkbox"].seat-checkbox {
+    width: 32px; /* Adjust size of checkbox */
+    height: 32px; /* Adjust size of checkbox */
+    background-image: url('~/logo/chair.png'); /* Path to the chair image */
+    background-size: cover; /* Ensure the image covers the checkbox */
+    border: none; /* Remove default border */
+    appearance: none; /* Remove default checkbox appearance */
+}
+
+    input[type="checkbox"].seat-checkbox:disabled {
+        background-image: url('~/logo/chair-disabled.png'); /* Optional: Use a different image for disabled seats */
+        opacity: 0.5; /* Optional: Reduce opacity for disabled seats */
+    }
+.seat-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); /* 10 columns per row */
+    grid-gap: 5px;
+}
+
+.seat-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* General seat icon styling */
+.seat-icon {
+    cursor: pointer;
+    margin-right: 5px;
+    font-size: 24px;
+    transition: all 0.3s ease;
+}
+
+    /* Available seat styling */
+    .seat-icon.available {
+        color: green; /* Available seats are green */
+    }
+
+        .seat-icon.available:hover {
+            color: #2e8b57; /* Darker green when hovered */
+        }
+
+    /* Selected seat styling */
+    .seat-icon.selected {
+        color: red; /* Selected seats are red */
+    }
+
+    /* Previously booked seats (unselectable) */
+    .seat-icon.booked {
+        color: gray; /* Previously booked seats are gray */
+        cursor: not-allowed; /* Disable cursor */
+    }
+
+    /* Optionally, add some effects on hover for selected or available seats */
+    .seat-icon:hover {
+        transform: scale(1.1); /* Slightly enlarge on hover for better UI feedback */
+    }

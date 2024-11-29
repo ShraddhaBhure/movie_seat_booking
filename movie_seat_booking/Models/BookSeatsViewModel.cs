@@ -9,6 +9,7 @@
         public string CustomerName { get; set; }
         //////newly
 
+        public List<int> SelectedSeatIds { get; set; }
     }
 
 }
