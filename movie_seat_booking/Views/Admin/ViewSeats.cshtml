@@ -1,41 +1,4 @@
-﻿@* @model Movie  
-
-<h2>Seats for @Model.Title</h2>
-
-<div>
-    <h3>Movie Details</h3>
-    <p><strong>Genre:</strong> @Model.Genre</p>
-    <p><strong>Showtime:</strong> @Model.ShowTime</p>
-    <p><strong>Price:</strong> @Model.Price</p>
-    <p><strong>Rows:</strong> @Model.Seat.Count / 10 (Assuming 10 columns per row)</p> 
-
-    <h4>Seat Layout</h4>
-    <div class="seat-grid">
-        @foreach (var seat in Model.Seat.OrderBy(s => s.RowName).ThenBy(s => s.ColumnName))
-        {
-            <div class="seat-item @(seat.IsBooked ? "booked" : "available")">
-                <strong>@seat.RowName, @seat.ColumnName</strong>
-                <br />
-                @if (seat.IsBooked)
-                {
-                    <span>Booked</span>
-                }
-                else
-                {
-                    <form method="post" action="@Url.Action("BookSeat", "Admin")">
-                        <input type="hidden" name="seatId" value="@seat.SeatId" />
-                        <input type="hidden" name="movieId" value="@Model.MovieId" />
-                        <button type="submit" class="btn btn-success btn-sm">Book</button>
-                    </form>
-                }
-            </div>
-        }
-    </div>
-</div>
-
-
- *@
- @model ViewSeatsViewModel
+﻿@model ViewSeatsViewModel
 @{
     ViewData["Title"] = "View Seats for " + Model.Movie.Title;
 }

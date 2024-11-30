@@ -3,23 +3,49 @@
     ViewData["Title"] = "Book Seats for " + Model.Movie.Title;
 }
 
-<h2>Book Seats for @Model.Movie.Title</h2>
+
+
+<section id="contact" class="contact section">
+
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Book Seats for @Model.Movie.Title</h2>
+        
+    </div><!-- End Section Title -->
+
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+
 
 <form method="post" action="@Url.Action("ConfirmBooking", new { movieId = Model.Movie.MovieId })" id="bookingForm">
     <input type="hidden" name="selectedSeats" id="selectedSeatIds" />
 
+            <div class="col-md-12">
+                  <div class="row">
+                
+
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4" align-item="center">
+                        <img src="~/logo/screen1.png" class="img-fluid">
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                </div>
+            </div>
     <div class="row">
         <div class="col-md-12">
-            <h3>Select Your Seats</h3>
+   
 
              <!-- Seat Layout -->
 
             @foreach (var rowGroup in Model.Movie.RowGroups)
             {
-                <div class="row-group">
-                    <h4>@rowGroup.GroupName (Price: @rowGroup.Price.ToString("C"))</h4>
-
-                    <div class="seat-layout">
+                <div class="row">
+                    <div class="col-3"> 
+                    <h5>@rowGroup.GroupName (Price: @rowGroup.Price.ToString("C"))</h5>
+                    </div>
+                    <div class="seat-layout col-9">
                         @foreach (var seat in rowGroup.Seats.OrderBy(s => s.RowName).ThenBy(s => s.ColumnName))
                         {
                             <label class="seat-label">
@@ -51,10 +77,10 @@
     <!-- Customer Name -->
     <div>
         <label for="customerName">Your Name</label>
-        <input type="text" id="customerName" name="customerName" required />
+                <input type="text" class="form-control" id="customerName" name="customerName" required />
     </div>
 
-    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+            <button type="submit" class="btn-get-started">Confirm Booking</button>
 </form>
 
 <script>
@@ -82,3 +108,8 @@
         });
     });
 </script>
+
+
+    </div>
+
+                </section>

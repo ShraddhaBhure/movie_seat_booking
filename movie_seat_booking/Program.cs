@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using movie_seat_booking.Models;
 using movie_seat_booking.Services;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 //builder.Services.AddTransient<IEmailSender, EmailSender>();
 //builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 //builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddSingleton<StripeClient>(new StripeClient(builder.Configuration["Stripe:SecretKey"]));
+
 builder.Services.AddSingleton<SmsService>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

@@ -187,6 +187,7 @@ namespace movie_seat_booking.Controllers
 
             return View(booking);
         }
+
         ///////-----------------------------------------Working only for Single Seat Booking--------------------------
         //[HttpPost]
         //public IActionResult ConfirmBooking(int movieId, string[] selectedSeats, string customerName)

@@ -1,31 +1,64 @@
 ﻿@model Booking
 
-<h2>Booking Confirmation</h2>
 
-<p>Booking ID: @Model.BookingId</p>
-<p>Customer Name: @Model.CustomerName</p>
-<p>Movie: @Model.Movie.Title</p>
-<p>Booking Time: @Model.BookingTime.ToString("dd-MM-yyyy hh:mm:ss tt")</p>
-<p>Total Price: @Model.BookedPrice.ToString("C")</p> <!-- Show total price here -->
+<!-- Starter Section Section -->
+<section id="starter-section" class="starter-section section">
 
-<h3>Booked Seats</h3>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Row</th>
-            <th>Column</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var seat in Model.BookedSeats)
-        {
-            <tr>
-                <td>@seat.RowName</td>
-                <td>@seat.ColumnName</td>
-                <td>@seat.RowGroup.Price.ToString("C")</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="card">
+        <div class="card-header">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Booking Confirmation</h2>
+            </div><!-- End Section Title -->
+        </div>
+        <div class="card-body">
+            <div class="row">
 
+                <div class="col-8">
+                    <p>Booking ID: @Model.BookingId</p>
+                    <p class="card-text">Customer Name: @Model.CustomerName</p>
+                    <p class="card-text">Movie: @Model.Movie.Title</p>
+                    <p class="card-text">Booking Time: @Model.BookingTime.ToString("dd-MM-yyyy hh:mm:ss tt")</p>
+                    <p class="card-text">Total Price: @Model.BookedPrice.ToString("C")</p> <!-- Show total price here -->
+                </div>
+
+                <br /> 
+                <div class="col-4">
+                    <h5 class="card-title">Special title treatment</h5>
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Row</th>
+                                <th>Column</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var seat in Model.BookedSeats)
+                            {
+                                <tr>
+                                    <td>@seat.RowName</td>
+                                    <td>@seat.ColumnName</td>
+                                    <td>@seat.RowGroup.Price.ToString("C")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <form method="post" action="@Url.Action("Index", "Payment")">
+                    <input type="hidden" name="BookingId" value="@Model.BookingId" />
+                    <input type="hidden" name="TotalPrice" value="@Model.BookedPrice" />
+                    <button class="btn btn-primary" type="submit">Proceed to Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<!-- /Starter Section Section -->

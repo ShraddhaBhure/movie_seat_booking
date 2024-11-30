@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Payment Failed";
+}
+
+<!-- Starter Section Section -->
+<section id="starter-section" class="starter-section section">
+    <div class="card">
+        <div class="card-header">
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <h3>Payment Failed</h3>
+        <p>Sorry, there was an issue with your payment. Please try again later.</p>
+    </div><!-- End Section Title -->
+        </div>
+        <div class="card-body">
+    <div class="container" data-aos="fade-up">
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <p>Error: @ViewBag.ErrorMessage</p>
+        }
+            </div>
+        </div>
+        </div>
+</section><!-- /Starter Section Section -->
+

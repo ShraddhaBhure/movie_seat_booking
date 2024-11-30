@@ -1,0 +1,66 @@
+﻿@model movie_seat_booking.Models.Booking
+
+@{
+    ViewData["Title"] = "Movie Ticket Booking Payment";
+}
+
+<section id="starter-section" class="starter-section section">
+    <div class="card">
+        <div class="card-header">
+            <div class="container section-title" data-aos="fade-up">
+                <h3>Book Your Movie Seat</h3>
+                <p>Please complete the payment</p>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="container" data-aos="fade-up">
+                <form action="/Payment/Charge" method="post" id="payment-form">
+                    <!-- Hidden fields for bookingId and totalPrice -->
+                    <input type="hidden" name="BookingId" value="@ViewData["BookingId"]" />
+                    <input type="hidden" name="TotalPrice" value="@ViewData["TotalPrice"]" />
+
+                    <div class="form-group">
+                        <label for="card-element">
+                            Credit or debit card
+                        </label>
+                        <div id="card-element">
+                            <!-- A Stripe Element will be inserted here. -->
+                        </div>
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="btn btn-primary">Pay Now</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script type="text/javascript">
+    var stripe = Stripe('@ViewData["StripePublishableKey"]');
+    var elements = stripe.elements();
+    var card = elements.create('card');
+    card.mount('#card-element');
+
+    var form = document.getElementById('payment-form');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const { token, error } = await stripe.createToken(card);
+
+        if (error) {
+            var errorElement = document.getElementById('card-errors');
+            errorElement.textContent = error.message;
+        } else {
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+
+            form.submit();  // Submit the form after appending the token
+        }
+    });
+</script>

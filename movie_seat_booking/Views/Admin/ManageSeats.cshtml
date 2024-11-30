@@ -1,41 +1,4 @@
-﻿@* @model BookSeatsViewModel
-
-@{
-    ViewData["Title"] = "Manage Seats - " + Model.Movie.Title;
-}
-
-<h2>@ViewData["Title"]</h2>
-
-<h3>Available Seats for Movie: @Model.Movie.Title</h3>
-
-<form method="post" asp-action="UpdateSeats" asp-route-movieId="@Model.Movie.MovieId">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Row</th>
-                <th>Column</th>
-                <th>Available</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var seat in Model.AvailableSeats)
-            {
-                <tr>
-                    <td>@seat.RowName</td>
-                    <td>@seat.ColumnName</td>
-                    <td>
-                        <input type="checkbox" name="selectedSeats" value="@seat.SeatId" />
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <button type="submit" class="btn btn-primary">Update Seats</button>
-</form>
- *@
-
-
-@model Movie
+﻿@model Movie
 
 <h2>@Model.Title - Seat Layout</h2>
 

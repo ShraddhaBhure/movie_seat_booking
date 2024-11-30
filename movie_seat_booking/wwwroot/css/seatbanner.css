@@ -282,6 +282,7 @@ input[type="checkbox"].seat-checkbox {
     .seat-icon.booked {
         color: gray; /* Previously booked seats are gray */
         cursor: not-allowed; /* Disable cursor */
+
     }
 
     /* Optionally, add some effects on hover for selected or available seats */
