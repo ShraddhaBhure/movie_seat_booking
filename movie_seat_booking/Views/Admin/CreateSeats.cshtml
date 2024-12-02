@@ -1,131 +1,59 @@
-﻿@* @model CreateSeatsViewModel
+﻿@model CreateSeatsViewModel
 
-<h2>Create Seats for @Model.MovieTitle</h2>
+<!-- Starter Section Section -->
+<section id="starter-section" class="starter-section section">
 
-<!-- Form to create seats -->
-<form method="post" asp-action="CreateSeats">
-    <!-- Dropdown to select a movie -->
-    <div class="form-group">
-        <label for="MovieId">Select Movie:</label>
-        <select class="form-control" name="MovieId" id="MovieId" required>
-            <option value="">-- Select Movie --</option>
-            @foreach (var movie in Model.Movies)
-            {
-                <option value="@movie.MovieId">@movie.Title</option>
-            }
-        </select>
-    </div>
-
-    <!-- Input for number of rows -->
-    <div class="form-group">
-        <label for="Rows">Number of Rows:</label>
-        <input type="number" class="form-control" name="Rows" required min="1" />
-    </div>
-
-    <!-- Input for number of columns -->
-    <div class="form-group">
-        <label for="Columns">Number of Columns:</label>
-        <input type="number" class="form-control" name="Columns" required min="1" />
-    </div>
-
-    <!-- Submit button -->
-    <button type="submit" class="btn btn-primary">Create Seats</button>
-</form>
-
-<p>
-    <a href="@Url.Action("Index", "Admin")">Back to Movie List</a>
-</p>
- *@
-
-       @*  @model CreateSeatsViewModel
-
-<h2>Create Seats for @Model.MovieTitle</h2>
-
-<form method="post">
-    <div class="form-group">
-        <label for="Rows">Number of Rows</label>
-        <input type="number" id="Rows" name="Rows" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label for="Columns">Number of Columns</label>
-        <input type="number" id="Columns" name="Columns" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label for="FrontRowPrice">Front Row Price</label>
-        <input type="text" id="FrontRowPrice" name="FrontRowPrice" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label for="MiddleRowPrice">Middle Row Price</label>
-        <input type="text" id="MiddleRowPrice" name="MiddleRowPrice" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label for="BackRowPrice">Back Row Price</label>
-        <input type="text" id="BackRowPrice" name="BackRowPrice" class="form-control" required />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create Seats</button>
-</form>
- *@
-
-
-@model CreateSeatsViewModel
-
+    <div class="card">
+        <div class="card-header">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Create Seats</h2>
+            </div><!-- End Section Title -->
+        </div>
+       
+        
+        <div class="card-body">
 <form method="post" action="/Admin/CreateSeatsForMovie">
-    <div>
+            
+             
         <label for="MovieId">Select Movie:</label>
-        <select id="MovieId" name="MovieId">
+                <select id="MovieId" name="MovieId" class="form-control">
             @foreach (var movie in (SelectList)ViewData["Movies"])
             {
-                <option value="@movie.Value">@movie.Text</option>
+                <option value="@movie.Value" >@movie.Text</option>
             }
         </select>
 
-    </div>
-
-    <div>
+    
+        <br/>
+ 
         <label for="RowGroupId">Select Row Group:</label>
-        <select id="RowGroupId" name="RowGroupId">
+                <select id="RowGroupId" name="RowGroupId" class="form-control">
             <!-- RowGroups will be populated via AJAX after selecting a movie -->
             @foreach (var rowgroup in (SelectList)ViewData["RowGroup"])
             {
-                <option value="@rowgroup.Value">@rowgroup.Text</option>
+                        <option value="@rowgroup.Value" >@rowgroup.Text</option>
             }
         </select>
-    </div>
 
-    <div>
+                <br/>
         <label for="NumRows">Enter Number of Rows:</label>
-        <input type="number" id="NumRows" name="NumRows" min="1" />
-    </div>
+                <input type="number" class="form-control" id="NumRows" name="NumRows" min="1" />
 
-    <div>
+                <br/>
+  
         <label for="NumColumns">Enter Number of Columns:</label>
-        <input type="number" id="NumColumns" name="NumColumns" min="1" />
-    </div>
+                <input type="number" class="form-control" id="NumColumns" name="NumColumns" min="1" />
+
 
     <button type="submit">Create Seats</button>
 </form>
+            </div>
+    </div>
 
-@* <script>
-    // AJAX to load RowGroups based on selected Movie
-    document.getElementById("MovieId").addEventListener("change", function () {
-        var movieId = this.value;
-        fetch('/Admin/GetRowGroups?movieId=' + movieId)
-            .then(response => response.json())
-            .then(rowGroups => {
-                var rowGroupSelect = document.getElementById("RowGroupId");
-                rowGroupSelect.innerHTML = ""; // Clear previous options
-                rowGroups.forEach(rg => {
-                    var option = document.createElement("option");
-                    option.value = rg.RowGroupId;
-                    option.text = rg.GroupName + " - Price: " + rg.Price;
-                    rowGroupSelect.appendChild(option);
-                });
-            });
-    });
-</script>
- *@
+</section>
+   
+   
+
+
+
+

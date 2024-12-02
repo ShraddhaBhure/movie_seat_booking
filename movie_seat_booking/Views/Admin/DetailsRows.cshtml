@@ -3,7 +3,12 @@
 @{
     ViewData["Title"] = "Row Group Details";
 }
+<section id="starter-section" class="starter-section section">
 
+    <div class="card">
+
+
+        <div class="card-body">
 <h2>@Model.GroupName</h2>
 
 <div>
@@ -34,3 +39,6 @@
 <a href="@Url.Action("EditRows", new { id = Model.RowGroupId })">Edit</a> |
 <a href="@Url.Action("DeleteRows", new { id = Model.RowGroupId })">Delete</a> |
 <a href="@Url.Action("IndexRows")">Back to List</a>
+        </div>
+    </div>
+    </section>

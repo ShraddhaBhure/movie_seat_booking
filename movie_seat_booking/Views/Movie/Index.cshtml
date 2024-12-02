@@ -1,80 +1,123 @@
 ﻿@model List<Movie>
 
-
-
-
-<!-- Starter Section Section -->
+<!-- Starter Section -->
 <section id="starter-section" class="starter-section section">
-
-    <!-- Section Title -->
     <div class="container section-title" data-aos="fade-up">
-        @* <h2>Starter Section</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-   *@  </div><!-- End Section Title -->
-
+        <h2>Movies</h2>
+    </div><!-- End Section Title -->
 
     <div class="container" data-aos="fade-up">
-<div class="row">
-    @foreach (var movie in Model)
-    {
-        <div class="col-md-4 mb-4">
-            <div class="card" style="width: 18rem;">
-                @if (!string.IsNullOrEmpty(movie.CoverImage))
-                {
-                    <img src="~/movieimages/@movie.CoverImage" class="card-img-top" alt="@movie.Title" width="80" height="225" />
-                }
-                else
-                {
-                    <img src="~/images/default-cover.jpg" class="card-img-top" alt="Default Cover" width="80" height="225" />
-                }
-
-                <div class="card-body">
-                    <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })">@movie.Title</a></strong>
-                    <p class="card-text">
-                        <strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
-                    </p>
-
-                    <!-- Star Rating Section -->
-                    <div class="star-rating" data-movieid="@movie.MovieId">
-                        @for (int i = 1; i <= 5; i++)
+        <div class="row">
+            @foreach (var movie in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card" style="width: 18rem;">
+                        @if (!string.IsNullOrEmpty(movie.CoverImage))
                         {
-                            <i class="fa fa-star @(movie.Ratings.Any() && movie.Ratings.Average(r => r.Score) >= i ? "checked" : "")" data-value="@i"></i>
+                            <img src="~/movieimages/@movie.CoverImage" class="card-img-top" alt="@movie.Title" width="80" height="225" />
                         }
-                    </div>
-                    <!-- Add Review Button -->
-                    <button class="btn btn-info add-review-btn" data-movieid="@movie.MovieId">Add Review</button>
-
-                    <!-- Review Section (Hidden initially) -->
-                    <div class="review-section" id="review-section-@movie.MovieId" style="display: none;">
-                        <textarea id="review-text-@movie.MovieId" class="form-control" placeholder="Write your review here..."></textarea>
-                        <button class="btn btn-primary submit-review-btn" data-movieid="@movie.MovieId">Submit Review</button>
-                    </div>
-
-                    <!-- Display Reviews -->
-                    <div class="reviews">
-                        @foreach (var review in movie.Reviews)
+                        else
                         {
-                            <div class="review">
-                                <p><strong>@review.UserId</strong> (@review.ReviewDate.ToString("MMMM dd, yyyy"))</p>
-                                <p>@review.ReviewText</p>
+                            <img src="~/images/default-cover.jpg" class="card-img-top" alt="Default Cover" width="80" height="225" />
+                        }
+
+                        <div class="card-body">
+
+                         
+
+                            <strong><a href="@Url.Action("ViewMovieDetails", "Movie", new { movieId = movie.MovieId })">@movie.Title</a></strong>
+                            <p class="card-text">
+                                <strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
+                            </p>
+
+                            <!-- Star Rating Section -->
+                         
+                                <div class="star-rating" data-movieid="@movie.MovieId">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <i class="fa fa-star-o @((movie.Ratings.Any() && movie.Ratings.Average(r => r.Score) >= i) ? "checked" : "")" data-value="@i"></i>
+                                    }
+                                </div>
+                          
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-between">
+                                    <!-- Ratings aligned to the left -->
+                                    <p class="ratings">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="fa fa-star-o @((movie.Ratings.Any() && movie.Ratings.Average(r => r.Score) >= i) ? "checked" : "")" data-value="@i"></i>
+                                        }
+                                    </p>
+
+                                    <!-- Reviews aligned to the right -->
+                                    <p class="reviews">
+                                        @foreach (var review in movie.Reviews)
+                                        {
+                                            <div class="review">
+                                                <p><strong>@review.UserId</strong> (@review.ReviewDate.ToString("MMMM dd, yyyy"))</p>
+                                                <p>@review.ReviewText</p>
+                                            </div>
+                                        }
+                                    </p>
+                                </div>
                             </div>
-                        }
+
+                            @*      <p class="ratings"><strong>@movie.AverageRating</strong> ratings</p>
+                        <p class="reviews"><strong>@movie.TotalReviews</strong> reviews</p> *@
+
+                            <!-- Display Top 5 Reviews -->
+                            
+                            <div class="reviews-section">
+                                @foreach (var review in movie.Reviews.Take(5))
+                                {
+                                    <div class="review">
+                                        <p class="review-date"><strong>@review.ReviewDate.ToString("MMMM dd, yyyy")</strong></p>
+                                        <p class="review-text">@review.ReviewText</p>
+                                    </div>
+                                }
+                            </div>
+
+                          
+                            @*  <!-- Star Rating Section -->
+                            <div class="star-rating" data-movieid="@movie.MovieId">
+                                
+                            </div>
+
+                            <!-- Add Review Button -->
+                            <button class="btn btn-info add-review-btn" data-movieid="@movie.MovieId">Add Review</button>
+
+                            <!-- Review Section (Hidden initially) -->
+                            <div class="review-section" id="review-section-@movie.MovieId" style="display: none;">
+                                <textarea id="review-text-@movie.MovieId" class="form-control" placeholder="Write your review here..."></textarea>
+                                <button class="btn btn-primary submit-review-btn" data-movieid="@movie.MovieId">Submit Review</button>
+                            </div>
+
+                            <!-- Display Reviews -->
+                            <div class="reviews">
+                                @foreach (var review in movie.Reviews)
+                                {
+                                    <div class="review">
+                                        <p><strong>@review.UserId</strong> (@review.ReviewDate.ToString("MMMM dd, yyyy"))</p>
+                                        <p>@review.ReviewText</p>
+                                    </div>
+                                }
+                            </div>
+ *@
+                            <!-- Book Seats Button -->
+                            <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-outline-secondary" style="border-color: #eb5d1e; color: #eb5d1e;">Book Seats</a>
+                        </div>
                     </div>
-
-                    <!-- Book Seats Button -->
-                    <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-primary">Book Seats</a>
                 </div>
-            </div>
+            }
         </div>
-    }
-</div>
     </div>
-
-</section><!-- /Starter Section Section -->
+</section>
 
 <!-- jQuery Script -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<!-- Font Awesome for Star Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+@section Scripts {
 <script>
     $(document).ready(function () {
         // Handle the star click event for rating
@@ -92,9 +135,9 @@
                     $('.star-rating[data-movieid="' + movieId + '"] i').each(function () {
                         var starValue = $(this).data('value');
                         if (starValue <= rating) {
-                            $(this).removeClass('fa-star-o').addClass('fa-star').addClass('selected');
+                            $(this).removeClass('fa-star-o').addClass('fa-star checked');
                         } else {
-                            $(this).removeClass('fa-star').removeClass('selected').addClass('fa-star-o');
+                            $(this).removeClass('fa-star').removeClass('checked').addClass('fa-star-o');
                         }
                     });
                 },
@@ -146,143 +189,4 @@
         });
     });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-@* @model List<Movie>
-
-<div class="row">
-    @foreach (var movie in Model)
-    {
-        <div class="col-md-4 mb-4">
-            <div class="card" style="width: 18rem;">
-                @if (!string.IsNullOrEmpty(movie.CoverImage))
-                {
-                    <img src="~/movieimages/@movie.CoverImage" class="card-img-top" alt="@movie.Title" width="80" height="225" />
-                }
-                else
-                {
-                    <img src="~/images/default-cover.jpg" class="card-img-top" alt="Default Cover" width="80" height="225" />
-                }
-
-                <div class="card-body">
-                    <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })">@movie.Title</a></strong>
-                    <p class="card-text">
-                        <strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
-                    </p>
-
-                    <!-- Star Rating Section -->
-                    <div class="star-rating" data-movieid="@movie.MovieId">
-                        @for (int i = 1; i <= 5; i++)
-                        {
-                            <i class="fa fa-star @(movie.Ratings.Any() && movie.Ratings.Average(r => r.Score) >= i ? "checked" : "")" data-value="@i"></i>
-                        }
-                    </div>
-
-                    <!-- Add Review Button -->
-                    <button class="btn btn-info add-review-btn" data-movieid="@movie.MovieId">Add Review</button>
-
-                    <!-- Review Section (Hidden initially) -->
-                    <div class="review-section" id="review-section-@movie.MovieId" style="display: none;">
-                        <textarea id="review-text-@movie.MovieId" class="form-control" placeholder="Write your review here..."></textarea>
-                        <button class="btn btn-primary submit-review-btn" data-movieid="@movie.MovieId">Submit Review</button>
-                    </div>
-
-                    <!-- Display Reviews -->
-                    <div class="reviews">
-                        @foreach (var review in movie.Reviews)
-                        {
-                            <div class="review">
-                                <p><strong>@review.UserId</strong> (@review.ReviewDate.ToString("MMMM dd, yyyy"))</p>
-                                <p>@review.ReviewText</p>
-                            </div>
-                        }
-                    </div>
-
-                    <!-- Book Seats Button -->
-                    <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-primary">Book Seats</a>
-                </div>
-            </div>
-        </div>
-    }
-</div>
-
-<!-- jQuery Script -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<script>
-    // Handle the star click event
-    $(document).ready(function () {
-        $('.star-rating i').click(function () {
-            var rating = $(this).data('value');
-            var movieId = $(this).closest('.star-rating').data('movieid');
-
-            // Submit the rating via AJAX
-            $.ajax({
-                url: '@Url.Action("SubmitRating", "Movie")',  // Adjust URL for rating submission
-                type: 'POST',
-                data: { movieId: movieId, score: rating },
-                success: function (response) {
-                    // Update the star rating display
-                    $('.star-rating[data-movieid="' + movieId + '"] i').each(function () {
-                        var starValue = $(this).data('value');
-                        if (starValue <= rating) {
-                            $(this).removeClass('fa-star-o').addClass('fa-star').addClass('selected');
-                        } else {
-                            $(this).removeClass('fa-star').removeClass('selected').addClass('fa-star-o');
-                        }
-                    });
-                },
-                error: function () {
-                    alert('There was an error submitting your rating. Please try again.');
-                }
-            });
-        });
-    });
-
-    // Show the review textarea when 'Add Review' button is clicked
-    $('.add-review-btn').click(function () {
-        var movieId = $(this).data('movieid');
-        $('#review-section-' + movieId).toggle();  // Show or hide the review section
-    });
-
-    // Submit the review via AJAX
-    $('.submit-review-btn').click(function () {
-        var movieId = $(this).data('movieid');
-        var reviewText = $('#review-text-' + movieId).val();
-
-        if (reviewText.trim() === '') {
-            alert('Please write a review.');
-            return;
-        }
-
-        $.ajax({
-            url: '@Url.Action("AddReview", "Movie")',  // Adjust URL for review submission
-            type: 'POST',
-            data: {
-                movieId: movieId,
-                reviewText: reviewText
-            },
-            success: function (response) {
-                if (response.success) {
-                    alert(response.message);
-                    location.reload();  // Reload the page to display the new review
-                } else {
-                    alert(response.message);
-                }
-            },
-            error: function () {
-                alert('An error occurred while submitting your review. Please try again.');
-            }
-        });
-    });
-</script>
- *@
+}

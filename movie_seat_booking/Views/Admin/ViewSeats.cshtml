@@ -2,7 +2,12 @@
 @{
     ViewData["Title"] = "View Seats for " + Model.Movie.Title;
 }
+<section id="starter-section" class="starter-section section">
 
+    <div class="card">
+
+
+        <div class="card-body">
 <h2>Seat Layout for @Model.Movie.Title</h2>
 
 @foreach (var rowGroup in Model.RowGroups)
@@ -55,7 +60,9 @@
 
 <!-- Optionally add buttons to book or manage the seats -->
 <button class="btn btn-primary">Book Selected Seats</button>
-
+            </div>
+    </div>
+    </section>
 <!-- Style for seat status -->
 <style>
     .available {

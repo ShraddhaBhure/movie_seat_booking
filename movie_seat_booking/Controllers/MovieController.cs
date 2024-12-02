@@ -43,12 +43,12 @@ namespace movie_seat_booking.Controllers
         //    return View(movies);
         //}
 
-        public async Task<IActionResult> MovieDetails(int id)
+        public async Task<IActionResult> ViewMovieDetails(int movieId)
         {
             var movie = await _context.Movies
                 .Include(m => m.Ratings)   // Load related ratings
                 .Include(m => m.Reviews)   // Load related reviews
-                .FirstOrDefaultAsync(m => m.MovieId == id);
+                .FirstOrDefaultAsync(m => m.MovieId == movieId);
 
             if (movie == null)
             {
@@ -57,10 +57,11 @@ namespace movie_seat_booking.Controllers
 
             return View(movie);  // Pass the movie object to the view
         }
-
         public async Task<IActionResult> AddRating(int movieId, decimal score)
         {
-            var movie = await _context.Movies.FindAsync(movieId);
+            var movie = await _context.Movies
+                                      .Include(m => m.Ratings)
+                                      .FirstOrDefaultAsync(m => m.MovieId == movieId);
 
             if (movie == null)
             {
@@ -77,8 +78,30 @@ namespace movie_seat_booking.Controllers
             _context.Ratings.Add(rating);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("MovieDetails", new { id = movieId });
+            return Json(new { success = true }); // You can return a success response here
         }
+
+        //public async Task<IActionResult> AddRating(int movieId, decimal score)
+        //{
+        //    var movie = await _context.Movies.FindAsync(movieId);
+
+        //    if (movie == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var rating = new Rating
+        //    {
+        //        MovieId = movieId,
+        //        Score = score,
+        //        UserId = User.Identity.Name  // Or whatever user system you're using
+        //    };
+
+        //    _context.Ratings.Add(rating);
+        //    await _context.SaveChangesAsync();
+
+        //    return RedirectToAction("MovieDetails", new { id = movieId });
+        //}
 
 
 

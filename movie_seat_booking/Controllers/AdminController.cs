@@ -195,9 +195,88 @@ namespace movie_seat_booking.Controllers
 
 
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, Movie movie, IFormFile coverImage, IFormFile posterImage)
+        //{
+        //    if (id != movie.MovieId)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    try
+        //    {
+        //        // Handle cover image upload (optional)
+        //        if (coverImage != null && coverImage.Length > 0)
+        //        {
+        //            // Delete old cover image if exists
+        //            if (!string.IsNullOrEmpty(movie.CoverImage))
+        //            {
+        //                var oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "movieimages", movie.CoverImage);
+        //                if (System.IO.File.Exists(oldFilePath))
+        //                {
+        //                    _logger.LogInformation($"Deleting old cover image: {oldFilePath}");
+        //                    System.IO.File.Delete(oldFilePath);
+        //                }
+        //                else
+        //                {
+        //                    _logger.LogWarning($"Cover image not found: {oldFilePath}");
+        //                }
+        //            }
+
+        //            // Save the new cover image
+        //            var fileName = $"{movie.MovieId}_cover{Path.GetExtension(coverImage.FileName)}";
+        //            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "movieimages", fileName);
+
+        //            using (var stream = new FileStream(filePath, FileMode.Create))
+        //            {
+        //                await coverImage.CopyToAsync(stream);
+        //            }
+
+        //            // Update the movie's cover image file name in the database
+        //            movie.CoverImage = fileName;
+        //        }
+
+        //        // Handle poster image upload (optional)
+        //        if (posterImage != null && posterImage.Length > 0)
+        //        {
+        //            // Save the new poster image
+        //            var posterFileName = $"{movie.MovieId}_poster{Path.GetExtension(posterImage.FileName)}";
+        //            var posterFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "movieposters", posterFileName);
+
+        //            using (var stream = new FileStream(posterFilePath, FileMode.Create))
+        //            {
+        //                await posterImage.CopyToAsync(stream);
+        //            }
+
+        //            // Update the movie's poster image file name in the database
+        //            movie.PosterImage = posterFileName;
+        //        }
+        //        // If no poster image is provided, retain the original value of PosterImage
+
+        //        // Update the movie record in the database
+        //        _context.Update(movie);
+        //        await _context.SaveChangesAsync();
+
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!_context.Movies.Any(m => m.MovieId == movie.MovieId))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return View(movie);
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Movie movie, IFormFile coverImage, IFormFile posterImage)
+        public async Task<IActionResult> Edit(int id, Movie movie, IFormFile coverImage, IFormFile posterImage, IFormFile trailerFile)
         {
             if (id != movie.MovieId)
             {
@@ -240,6 +319,21 @@ namespace movie_seat_booking.Controllers
                 // Handle poster image upload (optional)
                 if (posterImage != null && posterImage.Length > 0)
                 {
+                    // Delete old poster image if exists
+                    if (!string.IsNullOrEmpty(movie.PosterImage))
+                    {
+                        var oldPosterPath = Path.Combine(_webHostEnvironment.WebRootPath, "movieposters", movie.PosterImage);
+                        if (System.IO.File.Exists(oldPosterPath))
+                        {
+                            _logger.LogInformation($"Deleting old poster image: {oldPosterPath}");
+                            System.IO.File.Delete(oldPosterPath);
+                        }
+                        else
+                        {
+                            _logger.LogWarning($"Poster image not found: {oldPosterPath}");
+                        }
+                    }
+
                     // Save the new poster image
                     var posterFileName = $"{movie.MovieId}_poster{Path.GetExtension(posterImage.FileName)}";
                     var posterFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "movieposters", posterFileName);
@@ -252,9 +346,24 @@ namespace movie_seat_booking.Controllers
                     // Update the movie's poster image file name in the database
                     movie.PosterImage = posterFileName;
                 }
-                // If no poster image is provided, retain the original value of PosterImage
 
-                // Update the movie record in the database
+                // Handle trailer file upload (optional) - Trailer might be a video file URL or a file
+                if (trailerFile != null && trailerFile.Length > 0)
+                {
+                    // You could store a video file or simply a trailer URL; we assume it's a file for now.
+                    var trailerFileName = $"{movie.MovieId}_trailer{Path.GetExtension(trailerFile.FileName)}";
+                    var trailerFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "movietrailers", trailerFileName);
+
+                    using (var stream = new FileStream(trailerFilePath, FileMode.Create))
+                    {
+                        await trailerFile.CopyToAsync(stream);
+                    }
+
+                    // Update the movie's trailer file name or URL in the database
+                    movie.Trailer = trailerFileName;  // Alternatively, this could be a URL if you're storing a URL.
+                }
+
+                // Update other movie properties (like Title, Genre, etc.)
                 _context.Update(movie);
                 await _context.SaveChangesAsync();
 

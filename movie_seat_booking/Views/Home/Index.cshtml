@@ -36,7 +36,7 @@
 <!-- Banner Carousel End -->
 
 <br />
-<br />
+
 
 
 <!-- Movie Listings -->
@@ -46,12 +46,6 @@
     <!-- Section Title -->
   
        
-
-    <br />
-    <br />
-
-    <br />
-    <br />
 
 
     <!-- Section Title -->
@@ -67,28 +61,28 @@
 
             <div class="row gy-4">
     @foreach (var movie in Model.MoviesIndex.Movies)
-    {
+            {
+               
       @*   <div class="col-md-4 mb-4"> *@
 
-                <div class="col-xl-3 col-lg-4 col-md-6" >
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             @*     <div class="col-xl-3 col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100"> *@
-
-            <div class="card" style="width: 18rem;">
+                    <div class="card movie-card">
+     @*        <div class="card" style="width: 18rem;"> *@
                 @if (!string.IsNullOrEmpty(movie.CoverImage))
                 {
-                    <img src="~/movieimages/@movie.CoverImage" class="card-img-top" alt="@movie.Title" width="80" height="225" />
+                            <img src="~/movieimages/@movie.CoverImage" class="card-img-top movie-img" alt="@movie.Title" width="80" height="225" />
                 }
                 else
                 {
-                    <img src="~/images/default-cover.jpg" class="card-img-top" alt="Default Cover" width="80" height="225" />
+                            <img src="~/images/default-cover.jpg" class="card-img-top movie-img" alt="Default Cover" width="80" height="225" />
                 }
 
-           @*      <div class="card-body"> *@
+                <div class="card-body">
+                            <strong><a href="@Url.Action("ViewMovieDetails", "Movie", new { movieId = movie.MovieId })">@movie.Title</a></strong>
 
-                        <div class="member-info">
-                            <div class="member-info-content">
-                    <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })">@movie.Title</a></strong>
-                    <p class="card-text">
+@*                             <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="movie-title">@movie.Title</a></strong>
+ *@                            <p class="card-text showtime">
                         <strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")
                     </p>
 
@@ -99,12 +93,26 @@
                             <i class="fa fa-star @(movie.AverageRating >= i ? "checked" : "")" data-value="@i"></i>
                         }
                     </div>
-                    <p><strong>@movie.RatingCount</strong> ratings</p>
-                    <p><strong>@movie.TotalReviews</strong> reviews</p>
+
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-between">
+                                    <!-- Ratings aligned to the left -->
+                                    <p class="ratings">
+                                        <strong>@movie.RatingCount</strong> ratings
+                                    </p>
+
+                                    <!-- Reviews aligned to the right -->
+                                    <p class="reviews">
+                                        <strong>@movie.TotalReviews</strong> reviews
+                                    </p>
+                                </div>
+                            </div>
+    @*                 <p><strong>@movie.RatingCount</strong> ratings</p>
+                    <p><strong>@movie.TotalReviews</strong> reviews</p> *@
 
                     <!-- Display Top 5 Reviews -->
-                    <h5>Top Reviews:</h5>
-                    <div>
+                    <p>Top Reviews:</p>
+                            <div class="reviews-section">
                         @foreach (var review in movie.Reviews)
                         {
                             <div class="review">
@@ -127,12 +135,12 @@
                     </div>
 
                     <!-- Book Seats Button -->
-                    <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-primary">Book Seats</a>
+                                <a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="btn btn-outline-secondary" style="border-color: #eb5d1e; color: #eb5d1e;">Book Seats</a>
                           
                         </div>
                     </div>
             </div>
-        </div>
+      
     }
 </div>
 

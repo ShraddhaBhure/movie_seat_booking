@@ -106,7 +106,20 @@ namespace movie_seat_booking.Controllers
 
 
 
+        public async Task<IActionResult> ViewMovieDetails(int id)
+        {
+            var movie = await _context.Movies
+                .Include(m => m.Ratings)   // Load related ratings
+                .Include(m => m.Reviews)   // Load related reviews
+                .FirstOrDefaultAsync(m => m.MovieId == id);
 
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            return View(movie);  // Pass the movie object to the view
+        }
 
 
 

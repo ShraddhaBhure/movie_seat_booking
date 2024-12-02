@@ -1,0 +1,109 @@
+﻿@model Movie
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<section class="movie-details-section">
+    <input type="hidden" asp-for="MovieId" />
+    <div class="container">
+        <div class="row">
+            <!-- Movie Poster Image -->
+            <div class="col-md-4">
+                <img src="~/movieimages/@Model.PosterImage" alt="@Model.Title Poster" class="img-fluid" />
+            </div>
+
+            <!-- Movie Details -->
+            <div class="col-md-8">
+                <h1>@Model.Title</h1>
+                <p><strong>Genre:</strong> @Model.Genre</p>
+                <p><strong>Showtime:</strong> @Model.ShowTime.ToString("MMMM dd, yyyy h:mm tt")</p>
+                <p><strong>Release Date:</strong> @Model.ReleaseDate.ToString("MMMM dd, yyyy")</p>
+                <p><strong>Price:</strong> $@Model.Price.ToString("0.00")</p>
+                <p><strong>Cast:</strong> @Model.Cast</p>
+
+                <div>
+                    <p><strong>Plot:</strong></p>
+                    <p>@Model.Plot</p>
+                </div>
+
+                <div>
+                    <p><strong>Trailer:</strong></p>
+                    <a href="@Model.Trailer" target="_blank">Watch Trailer</a>
+                </div>
+
+                <!-- Ratings -->
+                <div class="movie-ratings">
+                    <h4>Ratings:</h4>
+                    <div>
+                        @if (Model.Ratings.Any())
+                        {
+                            <p>Average Rating: @Model.Ratings.Average(r => r.Score).ToString("0.0")</p>
+                        }
+                        else
+                        {
+                            <p>No ratings yet.</p>
+                        }
+                    </div>
+                </div>
+
+                <!-- Reviews Section -->
+                <div class="movie-reviews">
+                    <h4>Reviews:</h4>
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <div class="review">
+                            <p><strong>@review.UserId</strong> (@review.ReviewDate.ToString("MMMM dd, yyyy"))</p>
+                            <p>@review.ReviewText</p>
+                        </div>
+                    }
+
+                    <!-- Review Form (if logged in) -->
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="add-review">
+                            <textarea id="review-text" class="form-control" placeholder="Write your review here..."></textarea>
+                            <button class="btn btn-primary" id="submit-review" data-movieid="@Model.MovieId">Submit Review</button>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Please <a href="/Account/Login">log in</a> to submit a review.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Handle the review submission (AJAX)
+        $('#submit-review').click(function () {
+            var movieId = $(this).data('movieid');
+            var reviewText = $('#review-text').val();
+
+            // Ensure review text is not empty
+            if (!reviewText.trim()) {
+                alert('Please write a review.');
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("SubmitReview", "Movie")',
+                type: 'POST',
+                data: {
+                    movieId: movieId,
+                    reviewText: reviewText
+                },
+                success: function (response) {
+                    // Reload the page or append the new review dynamically
+                    location.reload();
+                },
+                error: function () {
+                    alert('There was an error submitting your review.');
+                }
+            });
+        });
+    </script>
+}

@@ -1,70 +1,80 @@
-﻿@model Movie
+﻿
 
-@{
-    ViewData["Title"] = "Edit Movie";
-}
+ @model Movie
+<section id="starter-section" class="starter-section section">
+
+    <div class="card">
+        <div class="card-header">
+            <div class="container section-title" data-aos="fade-up">
+
+                <h2>Edit Row Group</h2>
+            </div><!-- End Section Title -->
+        </div>
 
 
-<form asp-action="Edit" enctype="multipart/form-data">
-    <input type="hidden" asp-for="MovieId" />
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+
     <div class="row">
     <div class="col-6">
-        <label for="Title">Title</label>
-        <input type="text" class="form-control" id="Title" asp-for="Title" required />
+ 
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
     </div>
-
-    <div class="col-6">
-        <label for="Genre">Genre</label>
-        <input type="text" class="form-control" id="Genre" asp-for="Genre" required />
+        <div class="col-6">
+ 
+        <label asp-for="Genre"></label>
+        <input asp-for="Genre" class="form-control" />
+        <span asp-validation-for="Genre" class="text-danger"></span>
         </div>
     </div>
-
         <div class="row">
-    <div class="col-6">
-        <label for="ShowTime">ShowTime</label>
-        <input type="datetime-local" class="form-control" id="ShowTime" asp-for="ShowTime" required />
-    </div>
+            <div class="col-4">
 
-    <div class="col-6">
-        <label for="Price">Price</label>
-        <input type="number" class="form-control" id="Price" asp-for="Price" required />
+        <label asp-for="CoverImage">Cover Image (Optional)</label>
+        <input type="file" name="coverImage" class="form-control" />
+    </div>
+                <div class="col-4">
+ 
+        <label asp-for="PosterImage">Poster Image (Optional)</label>
+        <input type="file" name="posterImage" class="form-control" />
+    </div>
+                    <div class="col-4">
+
+        <label asp-for="Trailer">Trailer (Optional - Video URL or File)</label>
+        <input type="file" name="trailerFile" class="form-control" />
+            </div>  <div class="row">
+                        <div class="col-4">
+
+        <label asp-for="ShowTime"></label>
+        <input asp-for="ShowTime" class="form-control" />
+        <span asp-validation-for="ShowTime" class="text-danger"></span>
+    </div>
+                            <div class="col-4">
+  
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
             </div>
-        </div>
-       
-    <div class="row">
-        <div class="col-3">
-            <label for="CoverImage">Cover Image</label>
-            <input type="file" class="form-control" id="CoverImage" name="coverImage" />
-        </div>
-        <div class="col-3">
-            <label for="PosterImage">Poster Image</label>
-            <input type="file" class="form-control" id="PosterImage" name="posterImage" />
-        </div>
-
-
-
-        <div class="col-3">
-           @if (!string.IsNullOrEmpty(Model.CoverImage))
-           {
-        <div>
-            <h5>Current Cover Image:</h5>
-            <img src="~/movieimages/@Model.CoverImage" width="150" />
-        </div>
-            }
-        </div>
-
- <div class="col-3">
-    @if (!string.IsNullOrEmpty(Model.PosterImage))
-    {
-        <div>
-            <h5>Current Poster Image:</h5>
-            <img src="~/movieposters/@Model.PosterImage" width="150" />
-        </div>
-    }
-        </div>
-
+                <div class="row">
+                    <div class="col-6">
+  
+        <label asp-for="Cast"></label>
+        <input asp-for="Cast" class="form-control" />
+        <span asp-validation-for="Cast" class="text-danger"></span>
     </div>
+                                    <div class="col-6">
 
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+        <label asp-for="Plot"></label>
+        <textarea asp-for="Plot" class="form-control"></textarea>
+        <span asp-validation-for="Plot" class="text-danger"></span>
+    </div>
+                </div>
+            </div>
+    <button type="submit" class="btn btn-primary">Save</button>
 </form>
+    </div>
+    </section>

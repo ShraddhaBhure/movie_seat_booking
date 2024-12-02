@@ -4,8 +4,18 @@
     ViewData["Title"] = "Create Movie";
 }
 
-<h2>Create Movie</h2>
 
+<section id="starter-section" class="starter-section section">
+
+    <div class="card">
+        <div class="card-header">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Create Movie</h2>
+            </div><!-- End Section Title -->
+        </div>
+
+
+        <div class="card-body">
 <form asp-action="Create" enctype="multipart/form-data">
     <div class="row">
         <div class="col-6">
@@ -36,3 +46,6 @@
     </div></div>
     <button type="submit" class="btn btn-primary">Create</button>
 </form>
+        </div>
+    </div>
+    </section>

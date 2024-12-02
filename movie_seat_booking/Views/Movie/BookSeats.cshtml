@@ -26,8 +26,8 @@
 
                     <div class="col-md-4">
                     </div>
-                    <div class="col-md-4" align-item="center">
-                        <img src="~/logo/screen1.png" class="img-fluid">
+                    <div class="col-md-4" align-item="right">
+                        <img src="~/logo/screen3.JPG" width="5000px;" class="img-fluid">
                     </div>
                     <div class="col-md-4">
                     </div>
@@ -68,19 +68,35 @@
 
 
             <!-- Display Total Price -->
-            <div>
-                <strong>Total Price: </strong><span id="totalPrice">0.00</span>
-            </div>
+                    <br />
+            <div class="row">
+
+                        <div class="col-md-auto">
+                            <strong>Total Price: </strong><span id="totalPrice">0.00</span>
+                        </div>
+            </div><br/>
+                    <!-- Customer Name -->
+
+                    <div class="row">
+                        <div class="col-sm-3 align-text-left" >
+                            <label for="customerName">Enter Name</label>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="customerName" name="customerName" required />
+                        </div>
+                        <div class="col-sm-3">
+                            <button class="btn btn-outline-secondary" style="border-color: #eb5d1e; color: #eb5d1e;">Confirm Booking</button>
+                        </div>
+                    </div>
+
+                  
+                    
         </div>
     </div>
 
-    <!-- Customer Name -->
-    <div>
-        <label for="customerName">Your Name</label>
-                <input type="text" class="form-control" id="customerName" name="customerName" required />
-    </div>
 
-            <button type="submit" class="btn-get-started">Confirm Booking</button>
+
+          
 </form>
 
 <script>

@@ -29,7 +29,7 @@
                 }
 
                 <div class="card-body">
-                    <strong><a href="@Url.Action("BookSeats", "Movie", new { movieId = movie.MovieId })" class="movie-title">@movie.Title</a></strong>
+                            <strong><a href="@Url.Action("ViewMovieDetails", "Movie", new { movieId = movie.MovieId })" class="movie-title">@movie.Title</a></strong>
                     <p class="card-text showtime"><strong>Showtime:</strong> @movie.ShowTime.ToString("MMMM dd, yyyy h:mm tt")</p>
 
                     <!-- Star Rating Section -->
@@ -57,7 +57,7 @@
                     <p class="reviews"><strong>@movie.TotalReviews</strong> reviews</p> *@
 
                     <!-- Display Top 5 Reviews -->
-                    <h5>Top Reviews:</h5>
+                    <p>Top Reviews:</p>
                     <div class="reviews-section">
                         @foreach (var review in movie.Reviews.Take(5))  
                         {
