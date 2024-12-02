@@ -78,13 +78,23 @@
                                 <a asp-area="" asp-controller="Movie" asp-action="Index" class="nav-link">Movies</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Manage Movies</a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index">Admin Dashboard</a></li>
-                                    <li><hr class="dropdown-divider"></li>
+                                    @* <li><hr class="dropdown-divider"></li> *@
+                                <li>
+                                    <a asp-area="" asp-controller="Admin" asp-action="Index" class="nav-link">Manage Movies</a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Admin" asp-action="IndexRows" class="nav-link">Manage Rows</a>
+                                </li>
+                                <li>
+                                    <a asp-area="" asp-controller="Admin" asp-action="CreateSeats" class="nav-link">Create Seats </a>
+                                </li>
                                     <li><a class="dropdown-item" href="#">Something else here</a></li>
                                 </ul>
                             </li>
+                        
                         }
 
                         <!-- Customer Menu -->
@@ -93,11 +103,23 @@
                             <li class="nav-item">
                                 <a asp-area="" asp-controller="Movie" asp-action="Index" class="nav-link">Movies</a>
                             </li>
-                            <li class="nav-item">
-                                <a asp-area="" asp-controller="Index" asp-action="Rate" class="nav-link">Rate Movie</a>
-                            </li>
+                         
+                        <li class="nav-item">
+                            <a asp-area="" asp-controller="Booking" asp-action="OrderHistory" class="nav-link">Order History</a>
+                        </li>
+
                             <li class="nav-item">
                                 <a href="/Customer/Profile" class="nav-link">My Profile</a>
+                            </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pending Payments </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                   
+                                
+                                <li>
+                                    <a asp-area="" asp-controller="Booking" asp-action="PendingPayments" class="nav-link">Pending Payments </a>
+                                </li>
+                            </ul>
                             </li>
                         }
 
@@ -107,15 +129,7 @@
                             <li class="nav-item">
                                 <a asp-area="" asp-controller="Home" asp-action="AllMovies" class="nav-link">All Movies</a>
                             </li>
-                        <li class="nav-item">
-                            <a asp-area="" asp-controller="Admin" asp-action="Index" class="nav-link">Manage Movies</a>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-area="" asp-controller="Admin" asp-action="IndexRows" class="nav-link">Manage Rows</a>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-area="" asp-controller="Admin" asp-action="CreateSeats" class="nav-link">Create Seats </a>
-                        </li>
+                   
                             <li class="nav-item">
                                 <a asp-area="" asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
                             </li>

@@ -7,7 +7,11 @@
         public DateTime BookingTime { get; set; }
         public List<Seat> BookedSeats { get; set; }
         public string CustomerName { get; set; }
+
+        public string CustomerId { get; set; }
+        public string PaymentStatus { get; set; }
         public decimal BookedPrice { get; set; }
+
         //public string PaymentStatus { get; set; }
         public Movie Movie { get; set; }  // Add this property
 
