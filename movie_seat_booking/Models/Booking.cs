@@ -12,8 +12,8 @@
         public string PaymentStatus { get; set; }
         public decimal BookedPrice { get; set; }
 
-        //public string PaymentStatus { get; set; }
-        public Movie Movie { get; set; }  // Add this property
+     
+        public Movie Movie { get; set; }  
 
     }
 }

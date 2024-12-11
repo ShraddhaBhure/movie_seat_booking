@@ -47,14 +47,20 @@
                 </div>
             </div>
 
-
-            <div class="row">
-                <form method="post" action="@Url.Action("Index", "Payment")">
+             <div class="row">
+                <form method="post" action="@Url.Action("ProceedToPayment", "Payment")">
                     <input type="hidden" name="BookingId" value="@Model.BookingId" />
                     <input type="hidden" name="TotalPrice" value="@Model.BookedPrice" />
                     <button class="btn btn-primary" type="submit">Proceed to Payment</button>
                 </form>
             </div>
+           @*  <div class="row">
+                <form method="post" action="@Url.Action("Index", "Payment")">
+                    <input type="hidden" name="BookingId" value="@Model.BookingId" />
+                    <input type="hidden" name="TotalPrice" value="@Model.BookedPrice" />
+                    <button class="btn btn-primary" type="submit">Proceed to Payment</button>
+                </form>
+            </div> *@
         </div>
     </div>
 </section>

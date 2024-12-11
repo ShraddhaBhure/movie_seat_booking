@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "movie_seat_booking", "movie_seat_booking\movie_seat_booking.csproj", "{AC31AEB8-99FC-460E-BAC3-D14A147B3D74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "movie_seat_booking", "movie_seat_booking\movie_seat_booking.csproj", "{AC31AEB8-99FC-460E-BAC3-D14A147B3D74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CC523FCD-6A7A-490F-A6B3-2540F146D5DE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

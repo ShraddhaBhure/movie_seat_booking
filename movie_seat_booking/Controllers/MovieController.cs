@@ -190,19 +190,51 @@ namespace movie_seat_booking.Controllers
             _context.SaveChanges();
 
             // Redirect to the booking confirmation page
-            return RedirectToAction("BookingConfirmation", new { bookingId = booking.BookingId });
+            //return RedirectToAction("BookingConfirmation", new { bookingId = booking.BookingId });
+            return RedirectToAction("BookingConfirmation", new { bookingId = booking.BookingId, totalPrice = booking.BookedPrice });
+
         }
+        //public IActionResult BookingConfirmation(int bookingId, decimal totalPrice)
+        //{
+        //    var booking = _context.Bookings
+        //                          .Include(b => b.Movie)  // Ensure the Movie is included
+        //                          .Include(b => b.BookedSeats)
+        //                          .ThenInclude(bs => bs.RowGroup)  // Include RowGroup to get the price
+        //                          .FirstOrDefault(b => b.BookingId == bookingId);
+
+        //    if (booking == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Pass the total price to the view
+        //    ViewData["TotalPrice"] = totalPrice;
+
+        //    return View(booking);
+        //}
         public IActionResult BookingConfirmation(int bookingId, decimal totalPrice)
         {
             var booking = _context.Bookings
-                                  .Include(b => b.Movie)  // Ensure the Movie is included
+                                  .Include(b => b.Movie)  // Ensure Movie is included
                                   .Include(b => b.BookedSeats)
-                                  .ThenInclude(bs => bs.RowGroup)  // Include RowGroup to get the price
+                                  .ThenInclude(bs => bs.RowGroup)  // Ensure RowGroup is included to get the price
                                   .FirstOrDefault(b => b.BookingId == bookingId);
 
             if (booking == null)
             {
                 return NotFound();
+            }
+
+            // Log information to help debug
+            Console.WriteLine($"Booking ID: {booking.BookingId}, Movie Title: {booking.Movie?.Title}, Total Price: {totalPrice}");
+
+            // Check if the BookedSeats and RowGroup are correctly loaded
+            if (booking.BookedSeats != null)
+            {
+                foreach (var seat in booking.BookedSeats)
+                {
+                    Console.WriteLine($"Seat: {seat.RowName} {seat.ColumnName}, Price: {seat.RowGroup?.Price}");
+                }
             }
 
             // Pass the total price to the view
