@@ -4,7 +4,7 @@ The **Movie Seat Booking System** provides an interactive platform for users to 
 
 ![Movie Seat Booking](https://github.com/ShraddhaBhure/movie_seat_booking/blob/master/movie_seat_booking/wwwroot/ProjectImages/ProjectIndex.JPG)
 
-![Movie Seat Booking_T](https://github.com/ShraddhaBhure/movie_seat_booking/blob/master/movie_seat_booking/wwwroot/ProjectImages/ProjectTickets.JPG)
+![Movie Seat Booking_T](https://github.com/ShraddhaBhure/movie_seat_booking/blob/master/movie_seat_booking/wwwroot/ProjectImages/ProjectTicketss.JPG)
 ---
 
 ## Key Features
