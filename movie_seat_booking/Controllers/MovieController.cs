@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using movie_seat_booking.Models;
 using movie_seat_booking.Services;
@@ -11,11 +12,12 @@ namespace movie_seat_booking.Controllers
     {
 
         private readonly ApplicationDbContext _context;
-        private readonly SmsService _smsService;
-        public MovieController(ApplicationDbContext context, SmsService smsService)
+        private readonly SmsService _smsService; private readonly UserManager<ApplicationUser> _userManager;
+
+        public MovieController(ApplicationDbContext context, SmsService smsService, UserManager<ApplicationUser> userManager)
         {
             _smsService = smsService;
-            _context = context;
+            _context = context; _userManager = userManager;
         }
 
         // GET: Movie/Index
@@ -132,8 +134,87 @@ namespace movie_seat_booking.Controllers
         }
 
 
-
         /////-----------------------------------MultipleBookings-------------------------------------
+        //------------- code for stripe booking proccess---------
+        //[HttpPost]
+        //public IActionResult ConfirmBooking(int movieId, string[] selectedSeats, string customerName)
+        //{
+        //    var movie = _context.Movies
+        //                        .Include(m => m.RowGroups)
+        //                        .ThenInclude(rg => rg.Seats)
+        //                        .FirstOrDefault(m => m.MovieId == movieId);
+
+        //    if (movie == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Find the selected seats from the database using the selectedSeatIds from the form
+        //    var seatsToBook = movie.RowGroups
+        //                           .SelectMany(rg => rg.Seats)
+        //                           .Where(s => selectedSeats.Contains(s.SeatId.ToString()))
+        //                           .ToList();
+
+        //    if (seatsToBook.Count == 0)
+        //    {
+        //        // Handle the case where no seats were selected or invalid seat IDs
+        //        ModelState.AddModelError("", "No valid seats were selected.");
+        //        return View();
+        //    }
+
+        //    // Calculate the total price by summing the price of the row groups of selected seats
+        //    decimal totalPrice = seatsToBook.Sum(s => s.RowGroup.Price);
+
+        //    // Create a new booking record
+        //    var booking = new Booking
+        //    {
+        //        CustomerName = customerName,
+        //        MovieId = movie.MovieId,
+        //        BookedPrice = totalPrice,
+        //        BookingTime = DateTime.Now
+        //    };
+
+        //    // Add booking to the database and save to generate the BookingId
+        //    _context.Bookings.Add(booking);
+        //    _context.SaveChanges();
+
+        //    // Now update the Seat table for each selected seat
+        //    foreach (var seat in seatsToBook)
+        //    {
+        //        seat.IsBooked = true;  // Mark the seat as booked
+        //        seat.MovieId = movieId;
+        //        seat.BookingId = booking.BookingId;  // Set the booking ID for each seat
+        //        seat.RowGroupId = seat.RowGroup.RowGroupId;  // Set RowGroupId
+        //    }
+
+        //    // Save changes to the Seat table
+        //    _context.SaveChanges();
+
+        //    // Redirect to the booking confirmation page
+        //    //return RedirectToAction("BookingConfirmation", new { bookingId = booking.BookingId });
+        //    return RedirectToAction("BookingConfirmation", new { bookingId = booking.BookingId, totalPrice = booking.BookedPrice });
+
+        //}
+
+        //public IActionResult BookingConfirmation(int bookingId, decimal totalPrice)
+        //{
+        //    var booking = _context.Bookings
+        //                          .Include(b => b.Movie)  // Ensure the Movie is included
+        //                          .Include(b => b.BookedSeats)
+        //                          .ThenInclude(bs => bs.RowGroup)  // Include RowGroup to get the price
+        //                          .FirstOrDefault(b => b.BookingId == bookingId);
+
+        //    if (booking == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Pass the total price to the view
+        //    ViewData["TotalPrice"] = totalPrice;
+
+        //    return View(booking);
+        //}
+        //--------------changed code for simple booking proccess---------
 
         [HttpPost]
         public IActionResult ConfirmBooking(int movieId, string[] selectedSeats, string customerName)
@@ -173,7 +254,20 @@ namespace movie_seat_booking.Controllers
                 BookingTime = DateTime.Now
             };
 
-            // Add booking to the database and save to generate the BookingId
+            // Get the logged-in user's ID
+            var currentUserId = _userManager.GetUserId(User);  // This gives you the logged-in user's ID
+
+            // If the user is not logged in (null user)
+            if (currentUserId == null)
+            {
+                return Unauthorized("You must be logged in to confirm a booking.");
+            }
+
+            // Update the booking with the logged-in user's information
+            booking.CustomerId = currentUserId;
+            booking.PaymentStatus = "Pending"; // Set the PaymentStatus to 'Pending'
+
+            // Add the booking to the database and save to generate the BookingId
             _context.Bookings.Add(booking);
             _context.SaveChanges();
 
@@ -190,58 +284,60 @@ namespace movie_seat_booking.Controllers
             _context.SaveChanges();
 
             // Redirect to the booking confirmation page
-            //return RedirectToAction("BookingConfirmation", new { bookingId = booking.BookingId });
             return RedirectToAction("BookingConfirmation", new { bookingId = booking.BookingId, totalPrice = booking.BookedPrice });
-
         }
-        //public IActionResult BookingConfirmation(int bookingId, decimal totalPrice)
-        //{
-        //    var booking = _context.Bookings
-        //                          .Include(b => b.Movie)  // Ensure the Movie is included
-        //                          .Include(b => b.BookedSeats)
-        //                          .ThenInclude(bs => bs.RowGroup)  // Include RowGroup to get the price
-        //                          .FirstOrDefault(b => b.BookingId == bookingId);
 
-        //    if (booking == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    // Pass the total price to the view
-        //    ViewData["TotalPrice"] = totalPrice;
-
-        //    return View(booking);
-        //}
-        public IActionResult BookingConfirmation(int bookingId, decimal totalPrice)
+        public async Task<IActionResult> BookingConfirmation(int bookingId, decimal totalPrice)
         {
-            var booking = _context.Bookings
-                                  .Include(b => b.Movie)  // Ensure Movie is included
-                                  .Include(b => b.BookedSeats)
-                                  .ThenInclude(bs => bs.RowGroup)  // Ensure RowGroup is included to get the price
-                                  .FirstOrDefault(b => b.BookingId == bookingId);
-
-            if (booking == null)
+            // Check if bookingId is valid (greater than 0)
+            if (bookingId <= 0)
             {
-                return NotFound();
+                return BadRequest("Invalid booking ID.");
             }
 
-            // Log information to help debug
-            Console.WriteLine($"Booking ID: {booking.BookingId}, Movie Title: {booking.Movie?.Title}, Total Price: {totalPrice}");
-
-            // Check if the BookedSeats and RowGroup are correctly loaded
-            if (booking.BookedSeats != null)
+            try
             {
-                foreach (var seat in booking.BookedSeats)
+                var currentUserId = _userManager.GetUserId(User);
+                if (currentUserId == null)
                 {
-                    Console.WriteLine($"Seat: {seat.RowName} {seat.ColumnName}, Price: {seat.RowGroup?.Price}");
+                    return Unauthorized("You must be logged in to view this booking.");
                 }
+
+                // Get the booking with related seats and movie information
+                var booking = await _context.Bookings
+                    .Where(b => b.BookingId == bookingId && b.CustomerId == currentUserId)
+                    .Select(b => new BookingConfirmationViewModel
+                    {
+                        BookingId = b.BookingId,
+                        CustomerName = b.CustomerName,
+                        MovieTitle = b.Movie.Title,
+                        BookingTime = b.BookingTime,
+                        PaymentStatus = b.PaymentStatus ?? "Pending",
+                        BookedPrice = b.BookedPrice,
+                        Seats = b.BookedSeats.Select(s => new SeatDetail
+                        {
+                            SeatId = s.SeatId,
+                            RowName = s.RowName.ToString(),
+                            ColumnName = s.ColumnName.ToString(),
+                            SeatPrice = s.RowGroup.Price
+                        }).ToList()
+                    }).FirstOrDefaultAsync();
+
+                if (booking == null)
+                {
+                    return NotFound("Booking not found.");
+                }
+
+                // Pass the booking details to the view
+                return View(booking);
             }
-
-            // Pass the total price to the view
-            ViewData["TotalPrice"] = totalPrice;
-
-            return View(booking);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching booking: {ex.Message}");
+                return StatusCode(500, "Internal server error. Please try again later.");
+            }
         }
+
 
         ///////-----------------------------------------Working only for Single Seat Booking--------------------------
         //[HttpPost]
@@ -379,7 +475,6 @@ namespace movie_seat_booking.Controllers
 
             return Ok(); // Return a success response
         }
-
      
         [HttpPost]
         public IActionResult SubmitReview(int movieId, string reviewText)
@@ -412,6 +507,5 @@ namespace movie_seat_booking.Controllers
         }
 
       
-
     }
 }

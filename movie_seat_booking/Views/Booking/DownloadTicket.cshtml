@@ -1,0 +1,31 @@
+﻿@using System.IO
+@model TicketDownloadViewModel
+
+@{
+    ViewData["Title"] = "Download Ticket";
+}
+
+<h2>Download Your Ticket</h2>
+
+<div>
+    <p>Your payment has been successfully processed. You can download your ticket below.</p>
+    <a href="@Url.Content("~/tickets/" + Model.FileName)" class="btn btn-primary">Download Ticket</a>
+</div>
+@* @if (Model.PaymentStatus == "Paid")
+{
+{
+    <div>
+        <p>Your payment has been successfully processed. You can download your ticket below.</p>
+        <a href="@Url.Content("~/tickets/" + Model.FileName)" class="btn btn-primary">Download Ticket</a>
+    </div>
+}
+else
+{
+    <div>
+        <p>There was an issue processing your payment. Please try again.</p>
+    </div>
+} *@
+@* <form method="get" action="@Url.Action("DownloadTicket", "Booking", new { bookingId = Model.BookingId })">
+    <input type="hidden" name="BookingId" value="@Model.BookingId" />
+    <input type="hidden" name="TotalPrice" value="@Model.BookedPrice" />  <button type="submit" class="btn btn-success">Download Ticket</button>
+</form> *@

@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="itext7" Version="9.0.0" />
+    <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.0" />
+    <PackageReference Include="itext7.pdfhtml" Version="6.0.0" />
     <PackageReference Include="iTextSharp" Version="5.5.13.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.0">
@@ -20,6 +22,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="QRCoder" Version="1.6.0" />
+    <PackageReference Include="QRCoder.Core" Version="1.0.3" />
     <PackageReference Include="Stripe.net" Version="47.1.0" />
     <PackageReference Include="Twilio" Version="7.7.0" />
     <PackageReference Include="ZXing.Net" Version="0.16.9" />
@@ -27,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\movieposters\" />
+    <Folder Include="wwwroot\tickets\" />
   </ItemGroup>
 
   <ItemGroup>

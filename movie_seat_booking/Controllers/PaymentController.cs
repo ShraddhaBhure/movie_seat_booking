@@ -2,22 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using movie_seat_booking.Models;
 using Stripe;
-using System.Text;
 using QRCoder;
+using QRCoder.Core;
 using Microsoft.AspNetCore.Identity;
-using iText.Kernel.Geom;
-using System.Reflection.Metadata;
 using iText.Kernel.Pdf;
-using System.Drawing;
+using iText.Layout;
 using iText.Layout.Element;
-using ZXing.QrCode.Internal;
-using movie_seat_booking.Services;
-using System.Drawing.Imaging;
-using iTextSharp.text;                    // iTextSharp for PDF generation
-using iTextSharp.text.pdf;                // iTextSharp for PDF writer and related operations          // For image format (PNG)
-using System.IO;                         // For MemoryStream
-using System.Linq;                       // For LINQ (e.g., Select)
-using Document = iTextSharp.text.Document;
+using iText.IO.Image;
+
 
 
 namespace movie_seat_booking.Controllers
@@ -289,18 +281,65 @@ namespace movie_seat_booking.Controllers
 
 
 
+        //[HttpPost]
+        //public async Task<IActionResult> ProceedToPayment(int bookingId, decimal totalPrice)
+        //{
+        //    // Fetch the booking by ID
+        //    var booking = await _context.Bookings
+        //                                 .Include(b => b.Movie)
+        //                                 .Include(b => b.BookedSeats)
+        //                                 .FirstOrDefaultAsync(b => b.BookingId == bookingId);
+
+        //    if (booking == null)
+        //    {
+        //        // Return a NotFound response if the booking doesn't exist
+        //        return NotFound();
+        //    }
+
+        //    // Update the payment status and total price
+        //    booking.PaymentStatus = "Paid"; // Set payment status to 'Paid'
+        //    booking.BookedPrice = totalPrice; // Set the booked price to the given totalPrice
+
+        //    // If the user is authenticated, link the booking to the user
+        //    if (User.Identity.IsAuthenticated)
+        //    {
+        //        var userId = _userManager.GetUserId(User);
+        //        booking.CustomerId = userId; // Associate the booking with the authenticated user
+        //    }
+
+        //    // Save the updated booking to the database
+        //    _context.Update(booking);
+        //    await _context.SaveChangesAsync();
+
+        //    // If the payment status is successfully updated to "Paid", proceed to generate the ticket
+        //    if (booking.PaymentStatus == "Paid")
+        //    {
+        //        // Generate the ticket PDF file with the QR code
+        //        var pdfFile = GenerateTicketPDF(booking);
+
+        //        // Return the generated PDF file as a downloadable file
+        //        return File(pdfFile, "application/pdf", $"MovieTicket_{booking.BookingId}.pdf");
+        //    }
+
+        //    // If something goes wrong with the payment status, return an error
+        //    return BadRequest("Payment was not successfully processed.");
+        //}
+
+        // Optionally, you can have a GetTicket action if needed.
+
+
+
         [HttpPost]
         public async Task<IActionResult> ProceedToPayment(int bookingId, decimal totalPrice)
         {
             // Fetch the booking by ID
             var booking = await _context.Bookings
-                                         .Include(b => b.Movie)
-                                         .Include(b => b.BookedSeats)
-                                         .FirstOrDefaultAsync(b => b.BookingId == bookingId);
+                                        .Include(b => b.Movie)
+                                        .Include(b => b.BookedSeats)
+                                        .FirstOrDefaultAsync(b => b.BookingId == bookingId);
 
             if (booking == null)
             {
-                // Return a NotFound response if the booking doesn't exist
                 return NotFound();
             }
 
@@ -333,8 +372,35 @@ namespace movie_seat_booking.Controllers
             return BadRequest("Payment was not successfully processed.");
         }
 
-        // Optionally, you can have a GetTicket action if needed.
-        [HttpGet]
+
+ 
+
+ 
+
+    public byte[] GenerateQRCode(string data)
+    {
+        using (var qrGenerator = new QRCoder.Core.QRCodeGenerator())
+        {
+            // Create QR code data from the input string (ECC Level Q for better error correction)
+            var qrCodeData = qrGenerator.CreateQrCode(data, QRCoder.Core.QRCodeGenerator.ECCLevel.Q);
+
+            using (var qrCode = new QRCode(qrCodeData))  // Generate the QR code object
+            using (var bitmap = qrCode.GetGraphic(20))  // Get the graphical representation of the QR code (size 20)
+            using (var ms = new MemoryStream())
+            {
+                // Save the bitmap image to the memory stream in PNG format
+                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+                // Return the byte array representing the PNG image
+                return ms.ToArray();
+            }
+        }
+    }
+
+
+
+
+    [HttpGet]
         public async Task<IActionResult> DownloadTicket(int bookingId)
         {
             var booking = await _context.Bookings
@@ -351,71 +417,54 @@ namespace movie_seat_booking.Controllers
             // Return the file for download
             return File(pdfFile, "application/pdf", $"MovieTicket_{booking.BookingId}.pdf");
         }
-
-        private byte[] GenerateTicketPDF(Booking booking)
+        public byte[] GenerateTicketPDF(Booking booking)
         {
-            // Create the QR Code data as a string
-            string qrCodeData = $"Movie: {booking.Movie.Title}\n" +
-                                $"ShowTime: {booking.Movie.ShowTime}\n" +
-                                $"BookedSeats: {string.Join(", ", booking.BookedSeats.Select(s => $"{s.RowName} {s.ColumnName}"))}";
-
-            // Create QR code data using QRCodeGenerator
-            using (var qrGenerator = new QRCodeGenerator())
+            using (var ms = new MemoryStream())
             {
-                // Generate QR code data with error correction level Q
-                var qrCodeDataObj = qrGenerator.CreateQrCode(qrCodeData, QRCodeGenerator.ECCLevel.Q);
+                // Initialize the PDF writer and document
+                var writer = new PdfWriter(ms);
+                var pdf = new PdfDocument(writer);
+                var document = new Document(pdf);
 
-                // Render the QRCodeData to a Bitmap using System.Drawing
-                //using (var qrCode = new QRCode(qrCodeDataObj))
-                //{
-                    //using (var qrBitmap = qrCode.GetGraphic(20)) // 20 is the pixel size
-                    //{
-                    //    // Create a MemoryStream to hold the image
-                        using (var ms = new MemoryStream())
-                        {
-                            // Save the Bitmap as PNG into the MemoryStream
-                          //  qrBitmap.Save(ms, ImageFormat.Png);
-                            var qrCodeImageBytes = ms.ToArray();
+                // Add Booking Details
+                document.Add(new Paragraph($"Booking ID: {booking.BookingId}"));
+                document.Add(new Paragraph($"Customer Name: {booking.CustomerName}"));
+                document.Add(new Paragraph($"Movie: {booking.Movie?.Title}"));
+                document.Add(new Paragraph($"Booking Time: {booking.BookingTime.ToString("dd-MM-yyyy hh:mm:ss tt")}"));
+                document.Add(new Paragraph($"Total Price: {booking.BookedPrice.ToString("C")}"));
 
-                            // Now generate the PDF ticket
-                            using (var msPdf = new MemoryStream())
-                            {
-                                // Create the PDF document with A4 page size
-                                var document = new Document(iTextSharp.text.PageSize.A4);
-                                var writer = iTextSharp.text.pdf.PdfWriter.GetInstance(document, msPdf);
-                                document.Open();
+                // Add Seat Details (loop through booked seats)
+                var table = new Table(3, true);
+                table.AddHeaderCell("Row");
+                table.AddHeaderCell("Column");
+                table.AddHeaderCell("Price");
 
-                                // Add the movie details to the PDF
-                                document.Add(new iTextSharp.text.Paragraph($"Movie: {booking.Movie.Title}"));
-                                document.Add(new iTextSharp.text.Paragraph($"ShowTime: {booking.Movie.ShowTime.ToString("dd-MM-yyyy HH:mm")}",
-                                    new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 12, iTextSharp.text.Font.BOLD)));
-                                document.Add(new iTextSharp.text.Paragraph($"Booking ID: {booking.BookingId}"));
-                                document.Add(new iTextSharp.text.Paragraph($"Customer Name: {booking.CustomerName}"));
-                                document.Add(new iTextSharp.text.Paragraph($"Price: {booking.BookedPrice:C}"));
-
-                                // Add booked seats details to the PDF
-                                var seatDetails = new StringBuilder();
-                                foreach (var seat in booking.BookedSeats)
-                                {
-                                    seatDetails.AppendLine($"{seat.RowName} {seat.ColumnName}");
-                                }
-                                document.Add(new iTextSharp.text.Paragraph($"Booked Seats: {seatDetails.ToString()}"));
-
-                                // Add the generated QR code image to the PDF
-                                var img = iTextSharp.text.Image.GetInstance(qrCodeImageBytes);
-                                img.ScaleToFit(150f, 150f);  // Scale the image to fit into the page
-                                document.Add(img);
-
-                                // Close the document
-                                document.Close();
-
-                                // Return the generated PDF as a byte array
-                                return msPdf.ToArray();
-                            }
-                        }
-                    }
+                foreach (var seat in booking.BookedSeats)
+                {
+                    table.AddCell(seat.RowName.ToString());
+                    table.AddCell(seat.ColumnName.ToString());
+                    table.AddCell(seat.RowGroup.Price.ToString("C"));
                 }
+
+                document.Add(table);
+
+                byte[] qrCodeImage = GenerateQRCode($"Booking ID: {booking.BookingId}"); // You can use other data here
+                ImageData qrImage = ImageDataFactory.Create(qrCodeImage);  // No 'using' block here
+
+                // Add QR Code to the document
+                Image qrCode = new Image(qrImage).SetWidth(100).SetHeight(100).SetFixedPosition(450, 650); // Adjust position/size
+                document.Add(qrCode);
+
+
+                // Close the document
+                document.Close();
+
+                // Return the PDF as a byte array
+                return ms.ToArray();
             }
         }
-//    }
-//}
+
+
+
+    }
+        }

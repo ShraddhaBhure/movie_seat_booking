@@ -1,8 +1,8 @@
-﻿@model Booking
+﻿@* @model Booking
 
 
-<!-- Starter Section Section -->
-<section id="starter-section" class="starter-section section">
+<!-- Starter Section Section  for stripe--> *@
+@* <section id="starter-section" class="starter-section section">
 
     <div class="card">
         <div class="card-header">
@@ -61,10 +61,100 @@
                     <button class="btn btn-primary" type="submit">Proceed to Payment</button>
                 </form>
             </div> *@
-        </div>
+       @*  </div>
     </div>
-</section>
+</section> *@ 
 
 
 
 <!-- /Starter Section Section -->
+
+
+@model BookingConfirmationViewModel
+
+@{
+    ViewData["Title"] = "Booking Confirmation";
+}
+<section id="starter-section" class="starter-section section">
+
+    <div class="card">
+        <div class="card-header">
+            <div class="container section-title" data-aos="fade-up">
+                <h2>Booking Confirmation</h2>
+            </div><!-- End Section Title -->
+        </div>
+        <div class="card-body">
+            <div class="row">
+<h2>Booking Confirmation</h2>
+
+                <div class="col-8">
+
+    <h3>Booking Details</h3>
+    <p><strong>Customer Name:</strong> @Model.CustomerName</p>
+    <p><strong>Movie Title:</strong> @Model.MovieTitle</p>
+    <p><strong>Booking Time:</strong> @Model.BookingTime.ToString("g")</p>
+                    <p><strong>Total Price:</strong> @Model.BookedPrice.ToString("C")</p>
+    <p><strong>Payment Status:</strong> @Model.PaymentStatus</p>
+</div>
+
+
+                <br />
+                <div class="col-4">
+                    <h5 class="card-title">Seat Details</h5>
+
+                    <table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Seat ID</th>
+            <th>Row</th>
+            <th>Column</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var seat in Model.Seats)
+        {
+            <tr>
+                <td>@seat.SeatId</td>
+                <td>@seat.RowName</td>
+                <td>@seat.ColumnName</td>
+                <td>@seat.SeatPrice.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <p>Thank you for your booking! We hope you enjoy your movie.</p>
+            <br/>
+
+                        <div class="row">
+
+                            <form method="post" action="@Url.Action("ProceedToPayment", "Booking")">
+                                <input type="hidden" name="BookingId" value="@Model.BookingId" />
+                                <input type="hidden" name="TotalPrice" value="@Model.BookedPrice" />
+                                <button type="submit" class="btn btn-success">Proceed To Payment</button>
+                            </form>
+                            <!-- Add this button to your view to download the ticket -->
+                            @* <form method="get" action="@Url.Action("DownloadTicket", "Booking", new { bookingId = Model.BookingId })">
+                                <input type="hidden" name="BookingId" value="@Model.BookingId" />
+                                <input type="hidden" name="TotalPrice" value="@Model.BookedPrice" />  <button type="submit" class="btn btn-success">Download Ticket</button>
+                            </form> *@ @* <form method="get" action="@Url.Action("ProceedToPayment", "Booking", new { bookingId = Model.BookingId })">
+                                <input type="hidden" name="BookingId" value="@Model.BookingId" />
+                                <input type="hidden" name="TotalPrice" value="@Model.BookedPrice" />  <button type="submit" class="btn btn-success">Proceed To Payment</button>
+                            </form> *@
+
+@* 
+                            <form method="post" action="@Url.Action("ProceedToPayment", "Payment")">
+                                <input type="hidden" name="BookingId" value="@Model.BookingId" />
+                                <input type="hidden" name="TotalPrice" value="@Model.BookedPrice" />
+                                <button class="btn btn-primary" type="submit">Proceed to Payment</button>
+                            </form> *@
+                        </div>
+                    </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -15,18 +15,10 @@ namespace movie_seat_booking.Models
         public DbSet<Seat> Seat{ get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<RowGroup> RowGroups { get; set; }
- 
+
         // Configure relationships in the OnModelCreating method
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //// Configure one-to-many relationship between Movie and Seat
-            //modelBuilder.Entity<Movie>()
-            //    .HasMany(m => m.Seat)
-            //    .WithOne(s => s.Movie)
-            //    .HasForeignKey(s => s.MovieId);
-
-            //base.OnModelCreating(modelBuilder);
-
             base.OnModelCreating(modelBuilder);
 
             // Example of configuring relationships explicitly (if needed)
@@ -40,17 +32,27 @@ namespace movie_seat_booking.Models
                 .WithMany(m => m.Reviews)
                 .HasForeignKey(r => r.MovieId);
 
+            // Configure the relationships for the Seat entity
             modelBuilder.Entity<Seat>()
-                .HasOne(s => s.Movie)
-                .WithMany(m => m.Seat)
+                .HasOne(s => s.Movie)  // Seat has a foreign key to Movie
+                .WithMany(m => m.Seat)  // A Movie can have many Seats
                 .HasForeignKey(s => s.MovieId);
-            // Define relationships and constraints if needed
+
             modelBuilder.Entity<Seat>()
-                .HasOne(s => s.RowGroup)
-                .WithMany(rg => rg.Seats)
+                .HasOne(s => s.RowGroup)  // Seat has a foreign key to RowGroup
+                .WithMany(rg => rg.Seats)  // A RowGroup can have many Seats
                 .HasForeignKey(s => s.RowGroupId);
 
-       
+            modelBuilder.Entity<Seat>()
+                .HasOne(s => s.Booking)  // Seat has a foreign key to Booking
+                .WithMany(b => b.BookedSeats)  // A Booking can have many BookedSeats
+                .HasForeignKey(s => s.BookingId);
+
+            // Configure the relationship between Booking and Movie
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Movie)  // Booking has a foreign key to Movie
+                .WithMany()  // A Movie can have many Bookings (no navigation property on Movie)
+                .HasForeignKey(b => b.MovieId);
         }
     }
 }
