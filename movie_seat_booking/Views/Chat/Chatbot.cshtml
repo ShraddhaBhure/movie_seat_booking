@@ -1,0 +1,63 @@
+﻿@{
+    ViewData["Title"] = "Chat with Bot";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<!-- Chat Container -->
+<div id="chat-container" class="border p-3" style="max-width: 600px; margin: 0 auto;">
+    <div id="chatbox" style="height: 400px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
+        <!-- Messages will be displayed here -->
+    </div>
+    <div class="mt-3">
+        <input type="text" id="userMessage" class="form-control" placeholder="Ask a question..." />
+        <button id="sendMessageButton" class="btn btn-primary mt-2" style="width: 100%;">Send</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Function to send the user message to the backend
+    function sendMessage() {
+        var userMessage = $('#userMessage').val();
+        if (userMessage.trim() === "") {
+            return;
+        }
+
+        // Display the user message in the chatbox
+        $('#chatbox').append('<div><strong>You:</strong> ' + userMessage + '</div>');
+
+        // Clear the input field
+        $('#userMessage').val('');
+
+        // Send the message to the server and get the response
+        $.ajax({
+            url: '/Chat/GetBotResponse',  // The API endpoint that handles user messages
+            type: 'POST',
+            data: { userMessage: userMessage },
+            success: function (response) {
+                // Display the bot's response in the chatbox
+                $('#chatbox').append('<div><strong>Bot:</strong> ' + response + '</div>');
+
+                // Scroll to the bottom of the chat
+                $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+            },
+            error: function () {
+                // Handle any errors that occur
+                $('#chatbox').append('<div><strong>Bot:</strong> Sorry, I encountered an error. Please try again.</div>');
+            }
+        });
+    }
+
+    // Attach event handler to the send button
+    $('#sendMessageButton').click(function () {
+        sendMessage();
+    });
+
+    // Allow the user to press 'Enter' to send the message
+    $('#userMessage').keypress(function (e) {
+        if (e.which === 13) {
+            sendMessage();
+        }
+    });
+</script>

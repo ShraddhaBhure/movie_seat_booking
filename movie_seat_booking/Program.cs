@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using movie_seat_booking.Hubs;
 using movie_seat_booking.Models;
 using movie_seat_booking.Services;
 using Stripe;
@@ -33,6 +34,9 @@ builder.Services.AddSingleton<SmsService>();
 
 builder.Services.AddControllersWithViews();
 
+// Register SignalR services
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 // Call CreateRolesAsync during startup
 await CreateRolesAsync(app);
@@ -46,7 +50,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
 app.UseAuthentication();
@@ -56,6 +59,10 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+//// Map SignalR Hub
+////HubEndpointConventionBuilder hubEndpointConventionBuilder = app.MapHub<ChatHub>("/chatHub");
+//app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
 static async Task CreateRolesAsync(WebApplication app)

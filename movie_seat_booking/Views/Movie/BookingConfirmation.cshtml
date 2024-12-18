@@ -130,7 +130,11 @@
             <br/>
 
                         <div class="row">
-
+                            <form method="post" action="@Url.Action("Index", "Payment")">
+                                <input type="hidden" name="BookingId" value="@Model.BookingId" />
+                                <input type="hidden" name="TotalPrice" value="@Model.BookedPrice" />
+                                <button class="btn btn-primary" type="submit">Proceed to Payment</button>
+                            </form>
                             <form method="post" action="@Url.Action("ProceedToPayment", "Booking")">
                                 <input type="hidden" name="BookingId" value="@Model.BookingId" />
                                 <input type="hidden" name="TotalPrice" value="@Model.BookedPrice" />

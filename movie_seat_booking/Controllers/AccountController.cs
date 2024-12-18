@@ -9,7 +9,7 @@ using movie_seat_booking.Services;
 
 namespace movie_seat_booking.Controllers
 {
-      public class AccountController : Controller
+    public class AccountController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
@@ -343,5 +343,11 @@ namespace movie_seat_booking.Controllers
         {
             return View();
         }
+
+        //[Authorize(Roles = "Admin")]
+        //public IActionResult AdminSaleReport()
+        //{
+        //    return View();
+        //}
     }
 }

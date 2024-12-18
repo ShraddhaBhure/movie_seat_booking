@@ -9,6 +9,7 @@ using movie_seat_booking.Models;
 using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text;
 
 namespace movie_seat_booking.Controllers
 {
@@ -837,6 +838,63 @@ namespace movie_seat_booking.Controllers
         {
             return _context.RowGroups.Any(e => e.RowGroupId == id);
         }
+        // GET: Admin/UploadCsv
+        public IActionResult UploadCsv()
+        {
+            return View();
+        }
 
+        // POST: Admin/UploadCsv
+        [HttpPost]
+        public IActionResult UploadCsv(IFormFile file)
+        {
+            if (file != null && file.Length > 0)
+            {
+                try
+                {
+                    // Read the CSV file
+                    using (var reader = new StreamReader(file.OpenReadStream(), Encoding.UTF8))
+                    {
+                        int lineNumber = 0;
+                        while (!reader.EndOfStream)
+                        {
+                            var line = reader.ReadLine();
+                            lineNumber++;
+
+                            if (lineNumber == 1) continue; // Skip the header row
+
+                            var columns = line.Split(',');
+                            if (columns.Length == 2)
+                            {
+                                var question = columns[0].Trim();
+                                var answer = columns[1].Trim();
+
+                                // Insert the data into the FAQ table
+                                _context.FAQs.Add(new FAQ { Question = question, Answer = answer });
+                            }
+                        }
+
+                        _context.SaveChanges(); // Commit to the database
+                    }
+
+                    // If successful, show a success message
+                    ViewBag.Message = "CSV file uploaded and data successfully added to the database!";
+                }
+                catch (Exception ex)
+                {
+                    // Handle any errors that occur during the process
+                    ViewBag.Error = $"An error occurred while processing the file: {ex.Message}";
+                }
+            }
+            else
+            {
+                // Handle the case where no file is uploaded
+                ViewBag.Error = "No file uploaded. Please select a CSV file to upload.";
+            }
+
+            return View();
+        }
     }
 }
+
+

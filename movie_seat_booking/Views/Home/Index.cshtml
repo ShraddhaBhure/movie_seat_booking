@@ -156,5 +156,90 @@
     }
 </div>
 
+
+        <!-- Modal -->
+        <div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="chatModalLabel">Chat with Bot</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Chat Container -->
+                        <div id="chat-container" class="border p-3">
+                            <div id="chatbox" style="height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
+                                <!-- Messages will be displayed here -->
+                            </div>
+                            <div class="mt-3">
+                                <input type="text" id="userMessage" class="form-control" placeholder="Ask a question..." />
+                                <button id="sendMessageButton" class="btn btn-primary mt-2" style="width: 100%;">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
     </div>
  </section>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Show the chat modal when the page loads
+        $('#chatModal').modal('show');
+
+        // Function to send the user message to the backend
+        function sendMessage() {
+            var userMessage = $('#userMessage').val();
+            if (userMessage.trim() === "") {
+                return;
+            }
+
+            // Display the user message in the chatbox
+            $('#chatbox').append('<div><strong>You:</strong> ' + userMessage + '</div>');
+
+            // Clear the input field
+            $('#userMessage').val('');
+
+            // Send the message to the server and get the response
+            $.ajax({
+                url: '/Chat/GetBotResponse',  // The API endpoint that handles user messages
+                type: 'POST',
+                data: { userMessage: userMessage },
+                success: function (response) {
+                    // Display the bot's response in the chatbox
+                    $('#chatbox').append('<div><strong>Bot:</strong> ' + response + '</div>');
+
+                    // Scroll to the bottom of the chat
+                    $('#chatbox').scrollTop($('#chatbox')[0].scrollHeight);
+                },
+                error: function () {
+                    // Handle any errors that occur
+                    $('#chatbox').append('<div><strong>Bot:</strong> Sorry, I encountered an error. Please try again.</div>');
+                }
+            });
+        }
+
+        // Attach event handler to the send button
+        $('#sendMessageButton').click(function () {
+            sendMessage();
+        });
+
+        // Allow the user to press 'Enter' to send the message
+        $('#userMessage').keypress(function (e) {
+            if (e.which === 13) {
+                sendMessage();
+            }
+        });
+    });
+</script>

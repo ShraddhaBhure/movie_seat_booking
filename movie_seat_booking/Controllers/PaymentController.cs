@@ -373,7 +373,20 @@ namespace movie_seat_booking.Controllers
         }
 
 
- 
+    //public byte[] GenerateQRCode(string data)
+    //{
+    //    using (var qrGenerator = new QRCodeGenerator())
+    //    {
+    //        var qrCodeData = qrGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q);
+    //        using (var qrCode = new QRCode(qrCodeData))
+    //        using (var bitmap = qrCode.GetGraphic(20)) // You can adjust the size (20) of the QR code
+    //        using (var ms = new MemoryStream())
+    //        {
+    //            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+    //            return ms.ToArray();
+    //        }
+    //    }
+  //  }
 
  
 
@@ -466,5 +479,70 @@ namespace movie_seat_booking.Controllers
 
 
 
+        //private byte[] GenerateTicketPDF(Booking booking)
+        //{
+        //    // Create the QR Code data as a string
+        //    string qrCodeData = $"Movie: {booking.Movie.Title}\n" +
+        //                        $"ShowTime: {booking.Movie.ShowTime}\n" +
+        //                        $"BookedSeats: {string.Join(", ", booking.BookedSeats.Select(s => $"{s.RowName} {s.ColumnName}"))}";
+
+        //    // Create QR code data using QRCodeGenerator
+        //    using (var qrGenerator = new QRCodeGenerator())
+        //    {
+        //        // Generate QR code data with error correction level Q
+        //        var qrCodeDataObj = qrGenerator.CreateQrCode(qrCodeData, QRCodeGenerator.ECCLevel.Q);
+
+        //        // Render the QRCodeData to a Bitmap using System.Drawing
+        //        //using (var qrCode = new QRCode(qrCodeDataObj))
+        //        //{
+        //        //using (var qrBitmap = qrCode.GetGraphic(20)) // 20 is the pixel size
+        //        //{
+        //        //    // Create a MemoryStream to hold the image
+        //        using (var ms = new MemoryStream())
+        //        {
+        //            // Save the Bitmap as PNG into the MemoryStream
+        //            //  qrBitmap.Save(ms, ImageFormat.Png);
+        //            var qrCodeImageBytes = ms.ToArray();
+
+        //            // Now generate the PDF ticket
+        //            using (var msPdf = new MemoryStream())
+        //            {
+        //                // Create the PDF document with A4 page size
+        //                var document = new Document(iTextSharp.text.PageSize.A4);
+        //                var writer = iTextSharp.text.pdf.PdfWriter.GetInstance(document, msPdf);
+        //                document.Open();
+
+        //                // Add the movie details to the PDF
+        //                document.Add(new iTextSharp.text.Paragraph($"Movie: {booking.Movie.Title}"));
+        //                document.Add(new iTextSharp.text.Paragraph($"ShowTime: {booking.Movie.ShowTime.ToString("dd-MM-yyyy HH:mm")}",
+        //                    new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.HELVETICA, 12, iTextSharp.text.Font.BOLD)));
+        //                document.Add(new iTextSharp.text.Paragraph($"Booking ID: {booking.BookingId}"));
+        //                document.Add(new iTextSharp.text.Paragraph($"Customer Name: {booking.CustomerName}"));
+        //                document.Add(new iTextSharp.text.Paragraph($"Price: {booking.BookedPrice:C}"));
+
+        //                // Add booked seats details to the PDF
+        //                var seatDetails = new StringBuilder();
+        //                foreach (var seat in booking.BookedSeats)
+        //                {
+        //                    seatDetails.AppendLine($"{seat.RowName} {seat.ColumnName}");
+        //                }
+        //                document.Add(new iTextSharp.text.Paragraph($"Booked Seats: {seatDetails.ToString()}"));
+
+        //                // Add the generated QR code image to the PDF
+        //                var img = iTextSharp.text.Image.GetInstance(qrCodeImageBytes);
+        //                img.ScaleToFit(150f, 150f);  // Scale the image to fit into the page
+        //                document.Add(img);
+
+        //                // Close the document
+        //                document.Close();
+
+        //                // Return the generated PDF as a byte array
+        //                return msPdf.ToArray();
+        //            }
+        //        }
+        //    }
+        //}
     }
         }
+//    }
+//}

@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Chatbot";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div id="chat-container">
+    <div id="messages"></div>
+    <input type="text" id="user-input" placeholder="Type a message..." />
+    <button id="send-button">Send</button>
+</div>
+
+<script>
+    document.getElementById('send-button').addEventListener('click', function () {
+        var userMessage = document.getElementById('user-input').value;
+        if (userMessage.trim() === '') {
+            return;
+        }
+
+        // Display the user message
+        var messagesDiv = document.getElementById('messages');
+        messagesDiv.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+
+        // Send the user message to the server
+        fetch('/Chat/GetBotResponse', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userMessage: userMessage }) // Send the message as JSON
+        })
+            .then(response => response.json()) // Expect a JSON response from the server
+            .then(botResponse => {
+                // Display the bot's response
+                messagesDiv.innerHTML += `<p><strong>Bot:</strong> ${botResponse}</p>`;
+                document.getElementById('user-input').value = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                messagesDiv.innerHTML += `<p><strong>Bot:</strong> Sorry, something went wrong.</p>`;
+            });
+    });
+</script>
+
+<style>
+    #chat-container {
+        width: 300px;
+        margin: 0 auto;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        font-family: Arial, sans-serif;
+    }
+
+    #messages {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+    }
+
+    #user-input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 16px;
+    }
+
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background-color: #45a049;
+        }
+</style>
+
+
+
