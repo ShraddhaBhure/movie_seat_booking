@@ -37,22 +37,26 @@ The **Movie Seat Booking System** provides an interactive platform for users to 
 - **View Past Bookings**: Users can view a history of their bookings.
 - **Download Tickets**: Users can download their tickets as PDFs or view them with a QR code.
 - **Cancel/Modify Bookings**: Users can modify or cancel bookings (subject to policy).
-
-### 7. **Notifications and Alerts Module**
+### 7. **Chatbot Functionality**
+- **User Sends a Question**: Chatbot UI: A simple interface where users can type their questions.
+- - **Backend Processing & Database Storage**:ile Parsing: The backend parses the uploaded .csv file to extract questions and answers.
+Database Operations: The backend interacts with the database to store and retrieve the FAQ data.
+Chatbot Logic: The logic that processes user queries, finds the closest matching FAQ, and returns the response.
+### 8. **Notifications and Alerts Module**
 - **Booking Confirmation**: Automatic email and SMS notifications are sent after booking confirmation.
 - **Reminders**: Users receive reminders about upcoming showtimes and bookings.
 - **Promotions**: Admins can notify users about upcoming movies, discounts, and promotions.
 
-### 8. **Admin Dashboard and Analytics**
+### 9. **Admin Dashboard and Analytics**
 - **Sales & Revenue Reports**: Admins can view statistics and reports about bookings, revenue, and popular movies.
 - **User Management**: Admins can manage user accounts.
 - **Booking Analytics**: Admins can analyze booking patterns to optimize scheduling.
 
-### 9. **Review and Rating System**
+### 10. **Review and Rating System**
 - **Post-Booking Reviews**: Users can leave reviews and ratings for movies they have watched.
 - **Admin Moderation**: Admins can moderate reviews and ensure content appropriateness.
 
-### 10. **Security and Authentication**
+### 11. **Security and Authentication**
 - **Session Management**: Secure user sessions and password management.
 - **Data Encryption**: Encryption of sensitive data like payment details.
 
