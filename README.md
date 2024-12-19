@@ -1,6 +1,6 @@
 # Movie Seat Booking System
 
-The **Movie Seat Booking System** provides an interactive platform for users to explore movies, book seats, and complete payments, while offering an easy-to-use admin panel for managing movies, bookings, and users. The system integrates **ASP.NET Core MVC**, **SQL Server**, **Stripe**, **Twilio** for real-time notifications, and features various modules for booking, payment, reviews, and more.
+The **Movie Seat Booking System** provides an interactive platform for users to explore movies, book seats, and complete payments, while offering an easy-to-use admin panel for managing movies, bookings, and users. The system integrates **ASP.NET Core MVC**, **SQL Server**, **Stripe**, **Twilio** for real-time notifications,FAQ & chatbot and features various modules for booking, payment, reviews, and more.
 
 ![Movie Seat Booking](https://github.com/ShraddhaBhure/movie_seat_booking/blob/master/movie_seat_booking/wwwroot/ProjectImages/ProjectIndex.JPG)
 
