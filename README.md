@@ -22,6 +22,8 @@ The **Movie Seat Booking System** provides an interactive platform for users to 
 - **Add/Edit/Delete Movies**: Admins can manage movie listings, including name, description, cast, genre, and showtimes.
 - **Manage Movie Details**: Admins can upload movie posters, trailers, and manage other media content.
 - **Schedule Movie Showtimes**: Set up showtimes for movies at different theaters and screens.
+- **Charts**: Admin can see Monthly Revenue generated or Moviewise Bussiness.
+- **Chatbot**: Admin can Manage  FAQ and Chatbot
 
 ### 3. **Movie Discovery Module (User View)**
 - **Browse Movies**: Users can browse available movies by categories such as genre, rating, and language.
@@ -41,9 +43,10 @@ The **Movie Seat Booking System** provides an interactive platform for users to 
 - **View Past Bookings**: Users can view a history of their bookings.
 - **Download Tickets**: Users can download their tickets as PDFs or view them with a QR code.
 - **Cancel/Modify Bookings**: Users can modify or cancel bookings (subject to policy).
+
 ### 7. **Chatbot Functionality**
 - **User Sends a Question**: Chatbot UI: A simple interface where users can type their questions.
-- - **Backend Processing & Database Storage**:ile Parsing: The backend parses the uploaded .csv file to extract questions and answers.
+- **Backend Processing & Database Storage**:ile Parsing: The backend parses the uploaded .csv file to extract questions and answers.
 Database Operations: The backend interacts with the database to store and retrieve the FAQ data.
 Chatbot Logic: The logic that processes user queries, finds the closest matching FAQ, and returns the response.
 ### 8. **Notifications and Alerts Module**
@@ -63,6 +66,7 @@ Chatbot Logic: The logic that processes user queries, finds the closest matching
 ### 11. **Security and Authentication**
 - **Session Management**: Secure user sessions and password management.
 - **Data Encryption**: Encryption of sensitive data like payment details.
+
 
 ---
 
